@@ -49,7 +49,7 @@ case "$mode" in
         rules="[FLINT: FULL] Drop articles. Fragments OK. No pleasantries. High-signal."
         ;;
     ultra)
-        rules="[FLINT: ULTRA] Abbrev prose (DB/auth/cfg/req/res/fn/impl/ctx/err). X→Y causality. Strip conjunctions. One word when enough."
+        rules="[FLINT: ULTRA] Abbrev prose (DB/auth/cfg/req/res/fn/impl/ctx/err). X→Y causality. Strip conjunctions. One word when enough. | Before: 'component re-renders because new object reference created each render' After: 'inline obj prop → new ref → re-render. useMemo.' | Before: 'connection pooling reuses open DB connections instead of creating new ones per request' After: 'pool reuse DB conn. skip handshake → fast.' | Before: 'auth middleware checks if token expired before allowing access' After: 'auth: token expiry check. fail → 401.'"
         ;;
     wenyan)
         rules="[FLINT: WENYAN] Classical Chinese (文言). 之/其/者/也/矣 particles. VO syntax. 成語 idioms. Technical terms preserved."
