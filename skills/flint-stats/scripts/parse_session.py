@@ -38,7 +38,7 @@ COMPRESSION_RATIO = {
     "lite": 0.30,
     "full": 0.54,
     "ultra": 0.68,
-    "wenyan": 0.69,
+    # wenyan: no benchmark data — omit estimate rather than fabricate one
 }
 
 # Codex Plus plan limits (approximate, from observed data)
@@ -302,7 +302,7 @@ def main():
             print(f"  Estimated saved output-equivalent: {format_tokens(equivalent_saved)} tokens.")
         else:
             print(f"  With {stats['turns']} turns, estimated {pct}% fewer output tokens consumed.")
-        if mode != "ultra":
+        if mode == "ultra":
             print("  Ultra is a density/readability tradeoff, not guaranteed maximum savings.")
 
     elif mode == "off" and stats["turns"] > 0:

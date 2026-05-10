@@ -33,8 +33,8 @@ CAVEMAN_ROOTS = [
     HOME / ".claude" / "plugins" / "data" / "caveman-caveman",
 ]
 
-FLINT_RATIOS = {"lite": 0.30, "full": 0.54, "ultra": 0.68, "wenyan": 0.69}
-RUNES_RATIOS = {"lite": 0.35, "full": 0.54, "ultra": 0.69, "wenyan": 0.69}
+FLINT_RATIOS = {"lite": 0.30, "full": 0.54, "ultra": 0.68}  # wenyan: no data
+RUNES_RATIOS = {"lite": 0.35, "full": 0.54, "ultra": 0.69}  # wenyan: no data
 CAVEMAN_RATIOS = {"full": 0.54, "ultra": 0.69}
 
 
