@@ -1,7 +1,7 @@
 {
   "name": "codex-flint",
   "version": "1.0.0",
-  "description": "High-signal response flint for Codex CLI. Three modes: lite, full, ultra. Reduces token waste without sacrificing technical accuracy. Inspired by caveman by Julius Brussee.",
+  "description": "High-signal response flint for Codex CLI. Modes plus token budget/context hygiene diagnostics. Inspired by caveman by Julius Brussee.",
   "author": {
     "name": "Robert Sørensen",
     "url": "https://github.com/openai/codex"
@@ -12,13 +12,15 @@
     "flint",
     "tokens",
     "efficiency",
-    "brevity"
+    "brevity",
+    "budget",
+    "context"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Codex Flint",
-    "shortDescription": "Flint Codex responses — lite, full, or ultra mode",
-    "longDescription": "CODEX-FLINT activates high-signal response flint. Three modes: lite (drop filler), full (drop articles, fragments OK), ultra (MetaGlyph symbols, Chain-of-Draft, maximal abbreviation). Flag file persists mode across turns. Auto-safety: security warnings and irreversible ops always get full prose.",
+    "shortDescription": "Flint Codex responses and diagnose token budget waste",
+    "longDescription": "CODEX-FLINT activates high-signal response flint and includes budget diagnostics and benchmark checks. Modes: lite, full, ultra, wenyan. Budget doctor analyzes Codex session JSONL for input/context bloat, large tool outputs, broad searches, and hook noise. Benchmark compares FLINT against Caveman/RUNES-style ratios and checks ultra retention fixtures. Auto-safety: security warnings and irreversible ops always get full prose.",
     "developerName": "Robert Sørensen",
     "category": "Productivity",
     "capabilities": [

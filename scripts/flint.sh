@@ -28,16 +28,27 @@ read_flag() {
 
 write_flag() {
     local mode="$1"
-    # Safety: refuse to write if FLAG_FILE is a symlink
-    if [ -L "$FLAG_FILE" ]; then
-        echo "Error: $FLAG_FILE is a symlink. Refusing to write." >&2
+    # Refuse if flag file or its parent directory is a symlink.
+    # Protects against symlink-clobber attacks on predictable user-owned paths.
+    if [ -L "$FLAG_FILE" ] || [ -L "$CODEX_DIR" ]; then
+        echo "Error: $FLAG_FILE or its parent is a symlink. Refusing to write." >&2
         exit 1
     fi
     mkdir -p "$CODEX_DIR"
-    printf '%s' "$mode" > "$FLAG_FILE"
+    # Atomic write: write to temp then rename so readers never see partial content.
+    local tmp
+    tmp="${FLAG_FILE}.tmp.$$"
+    printf '%s' "$mode" > "$tmp"
+    mv "$tmp" "$FLAG_FILE"
 }
 
 remove_flag() {
+    # Refuse to unlink if flag is a symlink — rm -f on a symlink removes the
+    # link, not the target, but could still be used to remove an injected link.
+    if [ -L "$FLAG_FILE" ]; then
+        echo "Error: $FLAG_FILE is a symlink. Refusing to remove." >&2
+        exit 1
+    fi
     rm -f "$FLAG_FILE"
 }
 

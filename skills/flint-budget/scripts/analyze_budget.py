@@ -29,12 +29,12 @@ HIGH_INPUT_TURN = 50_000
 BROAD_PATTERNS = (
     "/Users/robert/.codex",
     "/Users/robert/.cache",
+    "/Users/robert ",
     "node_modules",
     "DerivedData",
     "codex-tui.log",
     "rollout-",
     "find /Users/robert",
-    "rg -n",
 )
 
 
@@ -306,4 +306,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -17,7 +17,8 @@ High-signal response flint for Codex CLI. Removes filler without sacrificing tec
 |------|--------|
 | `lite` | Drop filler and hedging. Keep articles and full sentences. Professional-tight. |
 | `full` | Drop articles. Fragments OK. Short synonyms. No pleasantries. (default) |
-| `ultra` | MetaGlyph (∈ → ∀ ∃ ∴). Abbreviate prose (DB/fn/req/res/impl/ctx/err/cfg/dep). Strip conjunctions. Arrows for causality. Chain-of-Draft. One word when one word is enough. |
+| `ultra` | Abbreviate prose (DB/auth/cfg/req/res/fn/impl/ctx/err/msg/val). Arrows for causality (X→Y). Strip conjunctions. One word when one word is enough. |
+| `wenyan` | Classical Chinese compression. Preserve technical identifiers. |
 
 ### Commands
 
@@ -26,10 +27,12 @@ High-signal response flint for Codex CLI. Removes filler without sacrificing tec
 - `activate flint lite` — enable lite mode
 - `activate flint full` — enable full mode
 - `activate flint ultra` — enable ultra mode
+- `activate flint wenyan` — enable wenyan mode
 
 **Switch while active:**
 - `switch to flint lite`
 - `switch to flint ultra`
+- `switch to flint wenyan`
 - `activate flint full`
 
 **Deactivate:**
@@ -45,6 +48,7 @@ cat ~/.codex/.flint-active 2>/dev/null || echo "off"
 **Direct flag write (advanced):**
 ```bash
 printf 'full' > ~/.codex/.flint-active   # activate full
+printf 'wenyan' > ~/.codex/.flint-active # activate wenyan
 rm -f ~/.codex/.flint-active              # deactivate
 ```
 
@@ -73,7 +77,7 @@ rm -f ~/.codex/.flint-active              # deactivate
 
 | File | Purpose |
 |------|---------|
-| `~/.codex/.flint-active` | Flag file — contains `lite`, `full`, or `ultra` |
+| `~/.codex/.flint-active` | Flag file — contains `lite`, `full`, `ultra`, or `wenyan` |
 | `~/.codex/skills/codex-flint/` | Plugin root (after install) |
 
 ### Stats

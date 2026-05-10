@@ -1,6 +1,6 @@
 ---
 name: flint
-description: Activate, switch, or deactivate CODEX-FLINT response flint mode (lite/full/ultra). Use when user says "activate flint", "flint lite/full/ultra", "flint on", "normal mode", "stop flint", "deactivate flint", or similar flint control phrases.
+description: Activate, switch, or deactivate CODEX-FLINT response flint mode (lite/full/ultra/wenyan). Use when user says "activate flint", "flint lite/full/ultra/wenyan", "flint on", "normal mode", "stop flint", "deactivate flint", or similar flint control phrases.
 ---
 
 # CODEX-FLINT
@@ -9,7 +9,7 @@ High-signal response flint for Codex CLI. Reduces token waste without sacrificin
 
 ## Flag file
 
-`~/.codex/.flint-active` contains: `lite`, `full`, or `ultra`. Missing or `off` = inactive.
+`~/.codex/.flint-active` contains: `lite`, `full`, `ultra`, or `wenyan`. Missing or `off` = inactive.
 
 ## Activation commands
 
@@ -17,6 +17,7 @@ High-signal response flint for Codex CLI. Reduces token waste without sacrificin
 - `activate flint lite` — enable lite mode
 - `activate flint full` — enable full mode
 - `activate flint ultra` — enable ultra mode
+- `activate flint wenyan` — enable wenyan mode
 
 ## Deactivation commands
 
@@ -46,6 +47,12 @@ printf 'ultra' > ~/.codex/.flint-active
 ```
 Confirm: "CODEX-FLINT: ultra."
 
+**Activate wenyan:**
+```bash
+printf 'wenyan' > ~/.codex/.flint-active
+```
+Confirm: "CODEX-FLINT: wenyan."
+
 **Deactivate:**
 ```bash
 rm -f ~/.codex/.flint-active
@@ -65,7 +72,9 @@ After activating or when already active, apply the mode rules for your response:
 
 **full:** Drop articles. Fragments OK. Short synonyms preferred. No pleasantries or preamble. High-signal only.
 
-**ultra:** MetaGlyph symbols allowed (∈ → ∀ ∃ ∴). Abbreviate prose (DB/fn/req/res/impl/ctx/err/cfg/dep). Strip conjunctions. Arrows for causality (X → Y). Chain-of-Draft: reason internally, output answer only. One word when one word is enough. Technical identifiers never abbreviated.
+**ultra:** Abbreviate prose words: DB, auth, cfg, req, res, fn, impl, ctx, err, msg, val, bool, pkg, dep, env, init, ref, var, arg, param, attr, prop. Use → for causality (X → Y → Z). Strip conjunctions where unambiguous. One word when one word is enough. Reason minimally, emit only the answer. Never abbreviate: code symbols, function names, API names, error strings, file paths, URLs, numbers.
+
+**wenyan:** Classical Chinese compression. Use 之/其/者/也/矣 particles and compact classical syntax where understandable. Preserve technical identifiers, file paths, commands, APIs, and error text as-is.
 
 ## Auto-safety — NEVER flint these
 

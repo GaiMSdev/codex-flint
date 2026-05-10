@@ -14,25 +14,8 @@ Inspired by [caveman](https://github.com/JuliusBrussee/caveman) by Julius Brusse
 |------|-------------|-----------------|
 | `lite` | Drop filler, hedging, pleasantries. Keep articles and full sentences. Professional-tight. | ~30% |
 | `full` | Drop articles. Fragments OK. Short synonyms. No preamble. (default) | ~75% |
-| `ultra` | MetaGlyph symbols. Abbreviated prose. Strip conjunctions. Arrows for causality. Chain-of-Draft. | ~87% |
+| `ultra` | Abbreviated prose. Causality arrows. Strip conjunctions. One word when enough. | ~68% |
 | `wenyan` | Classical Chinese literary compression. Technical identifiers preserved. | — |
-
----
-
-## MetaGlyph symbols (ultra only)
-
-| Symbol | Meaning |
-|--------|---------|
-| `∈` | is a member of / belongs to |
-| `→` | causes / leads to / results in |
-| `∀` | for all / in every case |
-| `∃` | there exists / some |
-| `∴` | therefore |
-| `!` | important / watch out |
-
-Prose abbreviations: `DB fn req res impl ctx err cfg dep`
-
-Technical identifiers (variable names, file paths, APIs) are never abbreviated.
 
 ---
 
@@ -56,12 +39,36 @@ Regardless of active mode, the model always uses full prose for:
 | `flint-commit` | `/flint-commit`, "commit this", "write commit" | Generate a high-signal Conventional Commits message from staged diff |
 | `flint-review` | `/flint-review`, "review the diff", "code review" | Signal-only review: one finding per line, severity-tagged, no praise |
 | `flint-stats` | `/flint-stats`, "flint stats", "show stats" | Parse session JSONL, report token usage and estimated savings |
+| `flint-budget` | `flint budget`, `flint doctor`, "what is using tokens" | Diagnose input/context waste and risky tool-output patterns |
+| `flint-benchmark` | `flint benchmark`, "compare with caveman", "does ultra lose data" | Compare FLINT against Caveman/RUNES-style ratios and test ultra retention fixtures |
+
+---
+
+## Input compression (flint-shrink)
+
+`flint-shrink` is an MCP proxy that compresses tool and resource descriptions before
+the model sees them — reducing input tokens 10–40% on tool-heavy sessions.
+
+Wrap any MCP server in `.codex/config.toml`:
+
+```toml
+[[mcpServers]]
+name = "filesystem"
+command = "node"
+args = [
+  "/Users/robert/.codex/skills/codex-flint/mcp-shrink/index.js",
+  "npx", "@modelcontextprotocol/server-filesystem", "/your/path"
+]
+```
+
+Code, URLs, paths, and identifiers are never touched. Only prose descriptions are compressed.
+Debug: `FLINT_SHRINK_DEBUG=1`. Extra fields: `FLINT_SHRINK_FIELDS=description,title`.
 
 ---
 
 ## Platform reality
 
-Codex CLI (v0.130+) supports skills, plugins, flag file persistence, and session JSONL logs. It does **not** support native before-turn hooks or automatic per-turn system-message injection. This means flint mode must be invoked by the user at the start of each session. The flag file remembers the chosen mode, but Codex does not re-inject the rules automatically on every turn.
+Codex CLI (v0.130+) supports skills, plugins, flag file persistence, hooks, and session JSONL logs. Hook `systemMessage` output is rendered as warning-style transcript text, so CODEX-FLINT keeps hooks silent and uses the terminal title (`Codex | FLINT ULTRA`, etc.) as the non-warning visible status. A true colored bottom status line requires a Codex TUI integration.
 
 ---
 
@@ -95,6 +102,8 @@ stop flint                  # deactivate
 /flint-commit               # generate commit message
 /flint-review               # review staged diff
 /flint-stats                # token usage report
+flint budget                # context budget diagnosis
+flint benchmark             # compare against Caveman/RUNES-style compression
 ```
 
 ---
@@ -105,6 +114,7 @@ stop flint                  # deactivate
 bash scripts/flint.sh on      # activate full
 bash scripts/flint.sh lite    # activate lite
 bash scripts/flint.sh ultra   # activate ultra
+bash scripts/flint.sh wenyan  # activate wenyan
 bash scripts/flint.sh off     # deactivate
 bash scripts/flint.sh status  # show current mode
 
