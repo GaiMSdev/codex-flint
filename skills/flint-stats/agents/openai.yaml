@@ -1,0 +1,4 @@
+interface:
+  display_name: "Compress Stats"
+  short_description: "Show token usage and flint savings for the current session"
+  default_prompt: "Use $flint-stats to show real token counts and estimated savings from flint."

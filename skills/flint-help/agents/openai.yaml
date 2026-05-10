@@ -1,0 +1,4 @@
+interface:
+  display_name: "Compress Help"
+  short_description: "Show CODEX-FLINT modes, commands, and examples"
+  default_prompt: "Use $flint-help to display the full CODEX-FLINT reference."

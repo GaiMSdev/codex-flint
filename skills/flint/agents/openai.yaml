@@ -1,0 +1,4 @@
+interface:
+  display_name: "Compress"
+  short_description: "Activate or deactivate CODEX-FLINT response flint"
+  default_prompt: "Use $flint to activate, switch, or deactivate flint mode."

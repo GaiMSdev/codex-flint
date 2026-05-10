@@ -1,0 +1,28 @@
+{
+  "name": "codex-flint",
+  "version": "1.0.0",
+  "description": "High-signal response flint for Codex CLI. Three modes: lite, full, ultra. Reduces token waste without sacrificing technical accuracy. Inspired by caveman by Julius Brussee.",
+  "author": {
+    "name": "Robert Sørensen",
+    "url": "https://github.com/openai/codex"
+  },
+  "homepage": "https://github.com/openai/codex",
+  "license": "MIT",
+  "keywords": [
+    "flint",
+    "tokens",
+    "efficiency",
+    "brevity"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Codex Flint",
+    "shortDescription": "Flint Codex responses — lite, full, or ultra mode",
+    "longDescription": "CODEX-FLINT activates high-signal response flint. Three modes: lite (drop filler), full (drop articles, fragments OK), ultra (MetaGlyph symbols, Chain-of-Draft, maximal abbreviation). Flag file persists mode across turns. Auto-safety: security warnings and irreversible ops always get full prose.",
+    "developerName": "Robert Sørensen",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive"
+    ]
+  }
+}

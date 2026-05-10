@@ -1,0 +1,53 @@
+---
+name: flint-stats
+description: Show CODEX-FLINT token usage stats for the current session. Parses ~/.codex/sessions/ JSONL files to report real input/output token counts, cached tokens, and estimated savings from active flint mode. Use when user says "flint stats", "show stats", "/flint-stats", or asks how many tokens have been used or saved.
+---
+
+# CODEX-FLINT Stats
+
+Show real token usage and estimated savings for the current session.
+
+## How to run
+
+Execute the bundled stats script:
+
+```bash
+python3 scripts/parse_session.py
+```
+
+The script path is relative to this skill directory. Resolve it:
+- Skill is at `~/.codex/skills/codex-flint/skills/flint-stats/` (after install)
+- Script is at `~/.codex/skills/codex-flint/skills/flint-stats/scripts/parse_session.py`
+
+Run it, capture stdout, and relay the output verbatim to the user.
+
+## What the script does
+
+1. Reads `~/.codex/.flint-active` to determine current mode
+2. Finds the most recently modified `rollout-*.jsonl` in `~/.codex/sessions/`
+3. Parses every `response_item` event to extract token usage from API response bodies
+4. Calculates estimated savings based on the active mode's flint ratio
+
+## Compression ratios used for estimates
+
+| Mode | Output reduction estimate |
+|------|--------------------------|
+| lite | 30% |
+| full | 75% |
+| ultra | 87% |
+
+These are estimates — actual savings depend on content type and model behavior.
+
+## If no token data is found
+
+Codex CLI (v0.130+) stores sessions as JSONL but embeds token data inside nested response structures. If the script reports zero tokens, it means the session format has changed or the session is very new. Relay the note from the script output to the user — do not fabricate numbers.
+
+## Fallback
+
+If the script fails for any reason (missing Python, permissions), run this shell fallback:
+
+```bash
+echo "Mode: $(cat ~/.codex/.flint-active 2>/dev/null || echo 'off')"
+echo "Sessions: $(find ~/.codex/sessions -name '*.jsonl' 2>/dev/null | wc -l | tr -d ' ') files"
+echo "Latest: $(find ~/.codex/sessions -name '*.jsonl' 2>/dev/null | xargs ls -t 2>/dev/null | head -1)"
+```
