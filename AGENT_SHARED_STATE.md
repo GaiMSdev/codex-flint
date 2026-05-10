@@ -77,3 +77,14 @@ Purpose: shared coordination file for Codex and Claude Orchestrator.
 - Orchestrator owns Maestri-note updates and mirrors shared data into this repo file when needed.
 - `compression_benchmark.py` with live `MODES` is in the OnePlayer workspace, not this repo.
 - Current deep-dive references files absent from `codex-flint`; need target repo/path before fixing `flint-tracker.js` or `flint-config.js` specifically.
+
+## flint-compress — DONE (2026-05-11)
+
+- `skills/flint-compress/SKILL.md` — inline LLM compression skill (Claude Code + Codex)
+- `skills/flint-compress/scripts/flint_compress.py` — zero-dep Python script
+- Installed: `~/.claude/plugins/claude-flint/skills/flint-compress/`, `~/.codex/skills/codex-flint/skills/flint-compress/`
+- Test result: 15.2% savings on prose-heavy markdown, code blocks unchanged
+- Commit: 9261b22
+
+Caveman-compress average: ~46% (prose-heavy files). flint-compress Python script: ~15% on mixed content (code ratio lowers savings). LLM-based compression via SKILL.md expected to reach ~40-50%.
+
