@@ -33,6 +33,7 @@ write_flag() {
         echo "Error: $FLAG_FILE is a symlink. Refusing to write." >&2
         exit 1
     fi
+    mkdir -p "$CODEX_DIR"
     printf '%s' "$mode" > "$FLAG_FILE"
 }
 

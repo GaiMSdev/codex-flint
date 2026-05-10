@@ -1,6 +1,8 @@
 ---
 name: flint-commit
-description: Generate a compressed, high-signal git commit message following Conventional Commits format. Trigger: user says "/flint-commit", "commit message", "write commit", "generate commit", "commit this".
+description: >
+  Generate a compressed, high-signal git commit message following Conventional Commits format.
+  Trigger: /flint-commit, "commit message", "write commit", "generate commit".
 ---
 
 # FLINT-COMMIT

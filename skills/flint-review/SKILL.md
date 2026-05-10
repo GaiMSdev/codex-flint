@@ -1,6 +1,8 @@
 ---
 name: flint-review
-description: Review git diff or changed files. One finding per line, severity-tagged, no praise, no scope creep. Trigger: user says "/flint-review", "review this", "review the diff", "review my changes", "code review".
+description: >
+  Review git diff or changed files. One finding per line, severity-tagged,
+  no praise, no scope creep. Trigger: /flint-review, "review this", "review the diff".
 ---
 
 # FLINT-REVIEW
