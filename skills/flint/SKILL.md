@@ -72,7 +72,7 @@ After activating or when already active, apply the mode rules for your response:
 
 **full:** Terse-first. Answer concisely. No pleasantries or preamble. Short direct sentences. Fragments OK when clear. Preserve nuance/facts.
 
-**ultra:** Max density. Abbreviate prose words: DB, auth, cfg, req, res, fn, impl, ctx, err, msg, val, bool, pkg, dep, env, init, ref, var, arg, param, attr, prop. Use → for causality (X → Y → Z). Always include established facts/values. Never abbreviate: code symbols, function names, API names, error strings, file paths, URLs, numbers. Do not use Chain-of-Draft.
+**ultra:** Max density. Abbrev prose: DB auth cfg req res fn impl ctx err msg val. Arrows X→Y→Z. PRESERVE ALWAYS: technical values (numbers, IDs, versions, constants) — quote exact, never paraphrase. Never abbrev: code symbols, function names, API names, error strings, paths, URLs. No Chain-of-Draft. One concrete example per answer.
 
 **wenyan:** Classical Chinese compression. Use 之/其/者/也/矣 particles and compact classical syntax where understandable. Preserve technical identifiers, file paths, commands, APIs, and error text as-is.
 

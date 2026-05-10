@@ -46,7 +46,7 @@ if [ "$EVENT" = "prompt" ]; then
             status_msg="[FLINT: $title_mode] Drop filler/hedging. Keep full sentences."
             ;;
         ultra)
-            status_msg="[FLINT: $title_mode] Max density. Arrows/abbrev OK. Preserve facts/values."
+            status_msg="[FLINT: ULTRA] Abbrev prose (DB/auth/cfg/res/fn). X→Y causality. PRESERVE: numbers/IDs/versions exact."
             ;;
         wenyan)
             status_msg="[FLINT: $title_mode] Wenyan style. Preserve technical identifiers."
@@ -74,12 +74,12 @@ Fragments OK when clear. Preserve nuance/facts.
 Example: "Auth bug: expiry check uses < not <=. Fix comparison."
 ACTIVE EVERY RESPONSE. Off: "normal mode" / "stop flint".'
 
-rules_ultra='[FLINT: ULTRA] COMPRESS ULTRA ACTIVE
-Max density. No preamble.
-Use → for causality. Abbrev prose: DB auth cfg req res fn impl ctx err.
-Never abbrev code symbols, APIs, paths, URLs, numbers, errors.
-Preserve established facts/values. No Chain-of-Draft.
-Example: "Inline prop → new ref → re-render. useMemo."
+rules_ultra='[FLINT: ULTRA] Max density.
+Abbrev prose: DB auth cfg req res fn impl ctx err msg val. Arrows: X→Y→Z.
+PRESERVE ALWAYS: technical values (numbers, IDs, versions, constants) — quote exact.
+Never abbrev: code symbols, function names, API names, errors, paths, URLs.
+Not: "Connection pooling reuses open database connections instead of creating new ones."
+Yes: "Pool reuse DB conn. Skip handshake → fast."
 ACTIVE EVERY RESPONSE. Off: "normal mode" / "stop flint".'
 
 rules_wenyan='[FLINT: WENYAN] COMPRESS WENYAN ACTIVE
