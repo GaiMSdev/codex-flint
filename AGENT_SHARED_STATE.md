@@ -4,8 +4,8 @@ Purpose: shared coordination file for Codex and Claude Orchestrator.
 
 ## Current Focus
 
-- Apply benchmark findings to `codex-flint`.
-- Keep one commit in this repo; do not push.
+- Apply benchmark and Caveman deep-dive findings to `codex-flint`.
+- Keep local commits in this repo; do not push.
 - Avoid parallel edits to the same file without updating this state.
 
 ## Benchmark Inputs
@@ -44,11 +44,27 @@ Purpose: shared coordination file for Codex and Claude Orchestrator.
 - [x] Finish doc/stat prompt updates.
 - [x] Add `FINDINGS.md` max 60 lines.
 - [x] Run tests.
-- [ ] Commit all repo changes once.
+- [x] Commit prompt/benchmark-doc changes once: `75cec8d`.
 - [x] Do not push.
+
+## Caveman Deep-Dive Triage
+
+- `flint-tracker.js`: not present in this repo. No existing plain-text Claude Code hook to fix here.
+- `flint-config.js`: not present in this repo. Existing `scripts/flint.sh` already checks symlinks and uses temp+rename, but does not use `O_NOFOLLOW` because it is shell-based.
+- `hooks/package.json`: no `hooks/` directory exists in this repo, so CJS enforcement applies only if/when a Claude Code hook package is added.
+- Memory compression: `skills/flint-compress/SKILL.md` exists as workflow docs, but there is no executable compressor implementation yet. This is highest-ROI missing feature for input savings.
+- Default config support: no `FLINT_DEFAULT_MODE` or `~/.config/flint/config.json` support yet.
+
+## Caveman Follow-Up Priority
+
+1. Implement real `flint-compress` script for Markdown memory/context files with backup, protected code blocks, and measured before/after size.
+2. If adding Claude Code hooks, create `hooks/package.json` with `"type": "commonjs"` and emit `hookSpecificOutput.additionalContext`.
+3. If adding JS config writer, use `O_NOFOLLOW`, `0600`, temp+rename, and symlink refusal.
+4. Add default mode resolution: `FLINT_DEFAULT_MODE` env -> `~/.config/flint/config.json` -> `full`.
 
 ## Blockers
 
 - Codex cannot directly read/edit Maestri note `flint-benchmark-handoff`; terminal is not connected to that note.
 - Orchestrator owns Maestri-note updates and mirrors shared data into this repo file when needed.
 - `compression_benchmark.py` with live `MODES` is in the OnePlayer workspace, not this repo.
+- Current deep-dive references files absent from `codex-flint`; need target repo/path before fixing `flint-tracker.js` or `flint-config.js` specifically.
