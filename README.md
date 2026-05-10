@@ -2,7 +2,7 @@
 
 High-signal compression for [Codex CLI](https://github.com/openai/codex).
 
-Reduces token waste without sacrificing technical accuracy. Activate a mode once per session — the flag file at `~/.codex/.flint-active` persists it across turns.
+Reduces output verbosity without sacrificing technical accuracy. Activate a mode once per session — the flag file at `~/.codex/.flint-active` persists it across turns.
 
 Inspired by [caveman](https://github.com/JuliusBrussee/caveman) by Julius Brussee.
 
@@ -10,12 +10,16 @@ Inspired by [caveman](https://github.com/JuliusBrussee/caveman) by Julius Brusse
 
 ## Modes
 
-| Mode | Description | Output reduction |
+| Mode | Description | Measured output reduction |
 |------|-------------|-----------------|
 | `lite` | Drop filler, hedging, pleasantries. Keep articles and full sentences. Professional-tight. | ~30% |
-| `full` | Drop articles. Fragments OK. Short synonyms. No preamble. (default) | ~75% |
-| `ultra` | Abbreviated prose. Causality arrows. Strip conjunctions. One word when enough. | ~68% |
+| `full` | Terse-first. No preamble. Short direct sentences. (default) | ~54% |
+| `ultra` | Max density. Abbreviated prose. Causality arrows. Facts preserved. No Chain-of-Draft. | ~57-69% |
 | `wenyan` | Classical Chinese literary compression. Technical identifiers preserved. | — |
+
+Benchmarks measure savings vs unguided baseline. Generic terse instruction alone
+reached ~82% output savings, so FLINT's value is persistence, consistency, and
+mode control rather than beating `Answer concisely` on raw tokens.
 
 ---
 
@@ -47,7 +51,7 @@ Regardless of active mode, the model always uses full prose for:
 ## Input compression (flint-shrink)
 
 `flint-shrink` is an MCP proxy that compresses tool and resource descriptions before
-the model sees them — reducing input tokens 10–40% on tool-heavy sessions.
+the model sees them — reducing tool description char-count ~3–5% on typical corpora; savings compound across many tools.
 
 Wrap any MCP server in `.codex/config.toml`:
 
@@ -68,7 +72,7 @@ Debug: `FLINT_SHRINK_DEBUG=1`. Extra fields: `FLINT_SHRINK_FIELDS=description,ti
 
 ## Platform reality
 
-Codex CLI (v0.130+) supports skills, plugins, flag file persistence, hooks, and session JSONL logs. Hook `systemMessage` output is rendered as warning-style transcript text, so CODEX-FLINT keeps hooks silent and uses the terminal title (`Codex | FLINT ULTRA`, etc.) as the non-warning visible status. A true colored bottom status line requires a Codex TUI integration.
+Codex CLI (v0.130+) supports skills, plugins, flag file persistence, hooks, and session JSONL logs. Hook `systemMessage` output is rendered as transcript text, so CODEX-FLINT emits compact per-turn reinforcement plus terminal title (`Codex | FLINT ULTRA`, etc.). A true colored bottom status line requires a Codex TUI integration.
 
 ---
 

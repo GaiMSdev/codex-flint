@@ -9,16 +9,20 @@ When the user invokes `/flint-help` or asks for flint help, display the followin
 
 ## CODEX-FLINT — Help
 
-High-signal response flint for Codex CLI. Removes filler without sacrificing technical accuracy.
+High-signal response flint for Codex CLI. Terse-first output without sacrificing technical accuracy.
 
 ### Modes
 
 | Mode | Effect |
 |------|--------|
 | `lite` | Drop filler and hedging. Keep articles and full sentences. Professional-tight. |
-| `full` | Drop articles. Fragments OK. Short synonyms. No pleasantries. (default) |
-| `ultra` | Abbreviate prose (DB/auth/cfg/req/res/fn/impl/ctx/err/msg/val). Arrows for causality (X→Y). Strip conjunctions. One word when one word is enough. |
+| `full` | Terse-first. No preamble. Short direct sentences. Fragments only when clear. (default) |
+| `ultra` | Max density. Abbreviate prose (DB/auth/cfg/req/res/fn/impl/ctx/err/msg/val). Arrows for causality. Preserve facts/values. No Chain-of-Draft. |
 | `wenyan` | Classical Chinese compression. Preserve technical identifiers. |
+
+Benchmarks measure savings vs unguided baseline. Generic terse instruction
+alone reached ~82% output savings, so FLINT uses structure for persistence,
+consistency, and mode control.
 
 ### Commands
 

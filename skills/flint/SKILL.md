@@ -5,7 +5,7 @@ description: Activate, switch, or deactivate CODEX-FLINT response flint mode (li
 
 # CODEX-FLINT
 
-High-signal response flint for Codex CLI. Reduces token waste without sacrificing technical accuracy.
+High-signal response flint for Codex CLI. Reduces output verbosity without sacrificing technical accuracy.
 
 ## Flag file
 
@@ -70,9 +70,9 @@ After activating or when already active, apply the mode rules for your response:
 
 **lite:** Drop filler, hedging, and pleasantries. Keep articles and full sentences. Professional-tight.
 
-**full:** Drop articles. Fragments OK. Short synonyms preferred. No pleasantries or preamble. High-signal only.
+**full:** Terse-first. Answer concisely. No pleasantries or preamble. Short direct sentences. Fragments OK when clear. Preserve nuance/facts.
 
-**ultra:** Abbreviate prose words: DB, auth, cfg, req, res, fn, impl, ctx, err, msg, val, bool, pkg, dep, env, init, ref, var, arg, param, attr, prop. Use → for causality (X → Y → Z). Strip conjunctions where unambiguous. One word when one word is enough. Reason minimally, emit only the answer. Never abbreviate: code symbols, function names, API names, error strings, file paths, URLs, numbers.
+**ultra:** Max density. Abbreviate prose words: DB, auth, cfg, req, res, fn, impl, ctx, err, msg, val, bool, pkg, dep, env, init, ref, var, arg, param, attr, prop. Use → for causality (X → Y → Z). Always include established facts/values. Never abbreviate: code symbols, function names, API names, error strings, file paths, URLs, numbers. Do not use Chain-of-Draft.
 
 **wenyan:** Classical Chinese compression. Use 之/其/者/也/矣 particles and compact classical syntax where understandable. Preserve technical identifiers, file paths, commands, APIs, and error text as-is.
 

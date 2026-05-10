@@ -26,10 +26,8 @@ test "$(cat "$tmp_home/.codex/.flint-active")" = "wenyan"
 
 hook_out="$(CODEX_HOME="$tmp_home/.codex" bash scripts/flint-hook.sh)"
 printf '%s' "$hook_out" | grep -q '"continue":true'
-if printf '%s' "$hook_out" | grep -q 'systemMessage'; then
-  echo "flint-hook should not emit warning-style systemMessage output" >&2
-  exit 1
-fi
+printf '%s' "$hook_out" | grep -q 'systemMessage'
+printf '%s' "$hook_out" | grep -q 'FLINT: WENYAN'
 
 CODEX_HOME="$tmp_home/.codex" bash scripts/flint.sh off >/dev/null
 test ! -e "$tmp_home/.codex/.flint-active"

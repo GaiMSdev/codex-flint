@@ -29,15 +29,21 @@ const PROTECTED = [
 const SENTINEL_RE = /\x00RUNES(\d+)\x00/g;
 function sentinel(i) { return `\x00RUNES${i}\x00`; }
 
+// Single-pass combined regex: apply all PROTECTED patterns simultaneously.
+// Sequential loop caused sentinel re-protection: later patterns matched inside
+// already-placed \x00RUNESn\x00 tokens, producing nested sentinels that
+// survive the single restore pass as raw \x00 bytes.
+const ALL_PROTECTED_RE = new RegExp(PROTECTED.map(r => r.source).join('|'), 'gi');
+
 function withProtected(text, fn) {
   const saved = [];
-  let w = text;
-  for (const re of PROTECTED) {
-    w = w.replace(re, m => { const i = saved.length; saved.push(m); return sentinel(i); });
-  }
-  let out = fn(w);
-  out = out.replace(SENTINEL_RE, (_, i) => saved[+i] ?? '');
-  return out;
+  const w = text.replace(ALL_PROTECTED_RE, m => {
+    const i = saved.length;
+    saved.push(m);
+    return sentinel(i);
+  });
+  const out = fn(w);
+  return out.replace(SENTINEL_RE, (_, i) => saved[+i] ?? '');
 }
 
 function compressProse(s) {

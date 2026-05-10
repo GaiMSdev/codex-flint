@@ -36,9 +36,9 @@ FLAG_PATH = CODEX_DIR / ".flint-active"
 
 COMPRESSION_RATIO = {
     "lite": 0.30,
-    "full": 0.75,
-    "ultra": 0.87,
-    "wenyan": 0.70,
+    "full": 0.54,
+    "ultra": 0.68,
+    "wenyan": 0.69,
 }
 
 # Codex Plus plan limits (approximate, from observed data)
@@ -293,7 +293,9 @@ def main():
     if ratio > 0 and stats["turns"] > 0:
         pct = int(ratio * 100)
         print(f"\nCompression savings estimate:")
-        print(f"  Mode {mode} reduces output by ~{pct}% vs. unflint.")
+        print(f"  Mode {mode} reduced output by ~{pct}% vs. unguided baseline in latest live benchmarks.")
+        print("  Generic terse instruction alone measured ~82%, so compare against terse too.")
+        print("  Output estimates do not fix input/context-dominated Codex sessions.")
         if output_tokens:
             equivalent_saved = round(output_tokens * (ratio / (1 - ratio)))
             print(f"  Current session output: {format_tokens(output_tokens)} tokens.")
@@ -301,10 +303,10 @@ def main():
         else:
             print(f"  With {stats['turns']} turns, estimated {pct}% fewer output tokens consumed.")
         if mode != "ultra":
-            print(f"  Activate 'ultra' for maximum savings (~87% output reduction).")
+            print("  Ultra is a density/readability tradeoff, not guaranteed maximum savings.")
 
     elif mode == "off" and stats["turns"] > 0:
-        print(f"\nTip: 'activate flint' to reduce output tokens by ~75% (full mode).")
+        print("\nTip: 'activate flint' for terse-first output; manage tool/context input for total-budget savings.")
 
     print(f"\nFlag file:  {FLAG_PATH}")
     print(f"Sessions:   {SESSIONS_DIR}")

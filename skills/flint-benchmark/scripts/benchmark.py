@@ -33,9 +33,9 @@ CAVEMAN_ROOTS = [
     HOME / ".claude" / "plugins" / "data" / "caveman-caveman",
 ]
 
-FLINT_RATIOS = {"lite": 0.30, "full": 0.75, "ultra": 0.87, "wenyan": 0.70}
-RUNES_RATIOS = {"lite": 0.35, "full": 0.75, "ultra": 0.88, "wenyan": 0.70}
-CAVEMAN_RATIOS = {"full": 0.75, "ultra": 0.87}
+FLINT_RATIOS = {"lite": 0.30, "full": 0.54, "ultra": 0.68, "wenyan": 0.69}
+RUNES_RATIOS = {"lite": 0.35, "full": 0.54, "ultra": 0.69, "wenyan": 0.69}
+CAVEMAN_RATIOS = {"full": 0.54, "ultra": 0.69}
 
 
 @dataclass
@@ -420,7 +420,8 @@ def main() -> int:
 
     print("")
     print("Interpretation:")
-    print("  FLINT ultra value ≈ RUNES ultra on output-side estimates (87% vs 88%), not live A/B output.")
+    print("  Live A/B showed generic terse prompting (~82%) beat structured FLINT prompts on raw output savings.")
+    print("  FLINT value should be judged as persistence + mode control, not savings over terse.")
     print("  Current Codex budget is input-dominated; budget doctor matters more than extra output compression.")
     print("  Ultra retention fixture is a guardrail with negative control, not proof of arbitrary prose preservation.")
     return 0

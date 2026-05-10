@@ -33,10 +33,13 @@ Run it, capture stdout, and relay the output verbatim to the user.
 | Mode | Output reduction estimate |
 |------|--------------------------|
 | lite | 30% |
-| full | 75% |
-| ultra | 87% |
+| full | 54% vs unguided baseline |
+| ultra | 57-69% vs unguided baseline |
 
-These are estimates — actual savings depend on content type and model behavior.
+These are output-side estimates. Generic terse instruction alone measured about
+82% output savings vs unguided baseline, so structured modes should be judged
+against terse control as well as baseline. Codex total budget is often
+input/context dominated.
 
 ## If no token data is found
 

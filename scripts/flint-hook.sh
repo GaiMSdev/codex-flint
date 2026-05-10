@@ -3,11 +3,10 @@
 #
 # Usage:
 #   flint-hook.sh session   — SessionStart: emit systemMessage with full rules (once per session)
-#   flint-hook.sh prompt    — UserPromptSubmit: set terminal title only, stay silent
+#   flint-hook.sh prompt    — UserPromptSubmit: compact visible reinforcement
 #
-# Codex renders hook systemMessage as a visible block. We accept this for
-# SessionStart (user sees it once as confirmation) but suppress it for
-# UserPromptSubmit (would appear on every turn as noise).
+# Codex renders hook systemMessage as visible transcript text. SessionStart
+# emits compact mode rules; UserPromptSubmit emits one-line reinforcement.
 
 set -euo pipefail
 
@@ -41,9 +40,23 @@ fi
 title_mode=$(printf '%s' "$mode" | tr '[:lower:]' '[:upper:]')
 set_terminal_title "Codex | FLINT $title_mode"
 
-# UserPromptSubmit: terminal title set above — stay silent, no systemMessage.
 if [ "$EVENT" = "prompt" ]; then
-    printf '{"continue":true}\n'
+    case "$mode" in
+        lite)
+            status_msg="[FLINT: $title_mode] Drop filler/hedging. Keep full sentences."
+            ;;
+        ultra)
+            status_msg="[FLINT: $title_mode] Max density. Arrows/abbrev OK. Preserve facts/values."
+            ;;
+        wenyan)
+            status_msg="[FLINT: $title_mode] Wenyan style. Preserve technical identifiers."
+            ;;
+        *)
+            status_msg="[FLINT: $title_mode] Answer concisely. No preamble. Preserve nuance."
+            ;;
+    esac
+    msg=$(printf '%s' "$status_msg" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read()))" 2>/dev/null || printf '"%s"' "$status_msg")
+    printf '{"continue":true,"systemMessage":%s}\n' "$msg"
     exit 0
 fi
 
@@ -55,21 +68,18 @@ Drop filler/hedging/pleasantries. Keep articles + full sentences. Professional-t
 ACTIVE EVERY RESPONSE. Off: "normal mode" / "stop flint".'
 
 rules_full='[FLINT: FULL] COMPRESS FULL ACTIVE
-Respond terse. Drop articles/filler/pleasantries/hedging. Fragments OK. Short synonyms.
-Pattern: [thing] [action] [reason]. [next step].
-Not: "Sure! I would be happy to help. The issue is likely caused by..."
-Yes: "Bug in auth middleware. Token expiry check use < not <=. Fix:"
+Answer concisely. No preamble.
+Pattern: thing → cause → fix.
+Fragments OK when clear. Preserve nuance/facts.
+Example: "Auth bug: expiry check uses < not <=. Fix comparison."
 ACTIVE EVERY RESPONSE. Off: "normal mode" / "stop flint".'
 
 rules_ultra='[FLINT: ULTRA] COMPRESS ULTRA ACTIVE
-Abbreviate prose: DB auth cfg req res fn impl ctx err msg val bool pkg dep env init ref var arg param attr prop.
-Never abbreviate: code symbols, function names, API names, error strings, file paths, URLs, numbers.
-Use → for causality: X → Y → Z. Strip conjunctions where unambiguous. One word when one word enough.
-Always include established facts/values in output — never omit.
-Examples:
-- Inline obj prop → new ref → re-render. useMemo.
-- Pool reuse DB conn. Skip handshake → fast under load.
-- Auth middleware: token expiry check. Fail → 401.
+Max density. No preamble.
+Use → for causality. Abbrev prose: DB auth cfg req res fn impl ctx err.
+Never abbrev code symbols, APIs, paths, URLs, numbers, errors.
+Preserve established facts/values. No Chain-of-Draft.
+Example: "Inline prop → new ref → re-render. useMemo."
 ACTIVE EVERY RESPONSE. Off: "normal mode" / "stop flint".'
 
 rules_wenyan='[FLINT: WENYAN] COMPRESS WENYAN ACTIVE
