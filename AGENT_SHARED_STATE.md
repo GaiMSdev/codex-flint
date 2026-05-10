@@ -55,11 +55,19 @@ Purpose: shared coordination file for Codex and Claude Orchestrator.
 - Memory compression: `skills/flint-compress/SKILL.md` exists as workflow docs, but there is no executable compressor implementation yet. This is highest-ROI missing feature for input savings.
 - Default config support: no `FLINT_DEFAULT_MODE` or `~/.config/flint/config.json` support yet.
 
+## Claude Plugin Reality Check
+
+- Installed Claude plugin path: `/Users/robert/.claude/plugins/claude-flint`.
+- `hooks/flint-tracker.js` already emits correct `hookSpecificOutput.additionalContext` JSON for `UserPromptSubmit`.
+- `hooks/flint-config.js` already uses `O_NOFOLLOW`, temp+rename, `0600`, symlink refusal, and size-capped reads.
+- `hooks/package.json` is missing there; add `{ "type": "commonjs" }` if Claude Code can run plugin hooks inside ESM package scope.
+- `FLINT_DEFAULT_MODE` / config-file default mode support is still missing in installed Claude plugin.
+
 ## Caveman Follow-Up Priority
 
 1. Implement real `flint-compress` script for Markdown memory/context files with backup, protected code blocks, and measured before/after size.
-2. If adding Claude Code hooks, create `hooks/package.json` with `"type": "commonjs"` and emit `hookSpecificOutput.additionalContext`.
-3. If adding JS config writer, use `O_NOFOLLOW`, `0600`, temp+rename, and symlink refusal.
+2. Add `hooks/package.json` with `"type": "commonjs"` to installed/source Claude plugin hooks.
+3. Keep JS config writer standards: `O_NOFOLLOW`, `0600`, temp+rename, and symlink refusal.
 4. Add default mode resolution: `FLINT_DEFAULT_MODE` env -> `~/.config/flint/config.json` -> `full`.
 
 ## Blockers
