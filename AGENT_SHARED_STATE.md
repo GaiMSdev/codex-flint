@@ -60,13 +60,14 @@ Purpose: shared coordination file for Codex and Claude Orchestrator.
 - Installed Claude plugin path: `/Users/robert/.claude/plugins/claude-flint`.
 - `hooks/flint-tracker.js` already emits correct `hookSpecificOutput.additionalContext` JSON for `UserPromptSubmit`.
 - `hooks/flint-config.js` already uses `O_NOFOLLOW`, temp+rename, `0600`, symlink refusal, and size-capped reads.
-- `hooks/package.json` is missing there; add `{ "type": "commonjs" }` if Claude Code can run plugin hooks inside ESM package scope.
+- `hooks/package.json` was added in installed plugin with `{ "type": "commonjs" }`.
+- `node --check` passes for installed `flint-tracker.js`, `flint-config.js`, and `flint-activate.js`.
 - `FLINT_DEFAULT_MODE` / config-file default mode support is still missing in installed Claude plugin.
 
 ## Caveman Follow-Up Priority
 
 1. Implement real `flint-compress` script for Markdown memory/context files with backup, protected code blocks, and measured before/after size.
-2. Add `hooks/package.json` with `"type": "commonjs"` to installed/source Claude plugin hooks.
+2. Add `hooks/package.json` with `"type": "commonjs"` to source Claude plugin hooks, not just installed copy.
 3. Keep JS config writer standards: `O_NOFOLLOW`, `0600`, temp+rename, and symlink refusal.
 4. Add default mode resolution: `FLINT_DEFAULT_MODE` env -> `~/.config/flint/config.json` -> `full`.
 
