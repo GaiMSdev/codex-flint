@@ -10,7 +10,7 @@ mode="off"
 if [ -f "$FLAG_FILE" ] && [ ! -L "$FLAG_FILE" ]; then
     value=$(tr -d "[:space:]" < "$FLAG_FILE" 2>/dev/null | head -c 32 || true)
     case "$value" in
-        lite|full|ultra)
+        lite|full|ultra|wenyan)
             mode="$value"
             ;;
     esac
@@ -32,10 +32,28 @@ case "$mode" in
     ultra)
         color="\\u001b[35m"
         ;;
+    wenyan)
+        color="\\u001b[36m"
+        ;;
     *)
         color=""
         ;;
 esac
 reset="\\u001b[0m"
 
-printf '{"systemMessage":"%s⚡ [FLINT: %s]%s","continue":true}\n' "$color" "$MODE" "$reset"
+case "$mode" in
+    lite)
+        rules="[FLINT: LITE] Drop filler/hedging. Keep articles + full sentences. Professional-tight."
+        ;;
+    full)
+        rules="[FLINT: FULL] Drop articles. Fragments OK. No pleasantries. High-signal."
+        ;;
+    ultra)
+        rules="[FLINT: ULTRA] Abbrev prose (DB/auth/cfg/req/res/fn/impl/ctx/err). X→Y causality. Strip conjunctions. One word when enough."
+        ;;
+    wenyan)
+        rules="[FLINT: WENYAN] Classical Chinese (文言). 之/其/者/也/矣 particles. VO syntax. 成語 idioms. Technical terms preserved."
+        ;;
+esac
+
+printf '{"systemMessage":"%s⚡ %s%s","continue":true}\n' "$color" "$rules" "$reset"

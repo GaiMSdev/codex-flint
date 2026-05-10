@@ -8,7 +8,7 @@ set -euo pipefail
 CODEX_DIR="${CODEX_HOME:-$HOME/.codex}"
 FLAG_FILE="$CODEX_DIR/.flint-active"
 
-VALID_MODES=("lite" "full" "ultra")
+VALID_MODES=("lite" "full" "ultra" "wenyan")
 
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -20,7 +20,7 @@ read_flag() {
         local val
         val=$(cat "$FLAG_FILE" 2>/dev/null | tr -d '[:space:]' | head -c 32)
         case "$val" in
-            lite|full|ultra) echo "$val"; return ;;
+            lite|full|ultra|wenyan) echo "$val"; return ;;
         esac
     fi
     echo "off"
@@ -57,6 +57,7 @@ show_help() {
     printf "  on / full   Activate full mode (default)\n"
     printf "  lite        Activate lite mode\n"
     printf "  ultra       Activate ultra mode\n"
+    printf "  wenyan      Activate wenyan (classical Chinese) mode\n"
     printf "  off         Deactivate flint\n"
     printf "  status      Show current mode\n"
     printf "  help        Show this help\n\n"
@@ -77,6 +78,10 @@ case "$CMD" in
     ultra)
         write_flag "ultra"
         printf "${GREEN}CODEX-FLINT: ultra activated.${NC}\n"
+        ;;
+    wenyan)
+        write_flag "wenyan"
+        printf "${GREEN}CODEX-FLINT: wenyan activated.${NC}\n"
         ;;
     off|stop|deactivate)
         remove_flag
