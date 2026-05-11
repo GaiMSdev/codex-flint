@@ -101,6 +101,7 @@ Validated runs only. CLI self-reporting excluded.
 | 2026-05-11 | F012d | Codex (tiktoken) | emoji 15–18 tok, ASCII bracket symbols 15, ASCII words 11 | Emoji up to 64% costlier than ASCII words — remove from FLINT output | HIGH |
 | 2026-05-11 | F012e | Codex (tiktoken) | double spaces 23 tok vs single/newline/blank all 15 | Normalize double spaces — 53% overhead | MEDIUM |
 | 2026-05-11 | F013 | OpenCode research | (PENDING — literature research assigned) Academic methods for LLM output compression | | PENDING |
+| 2026-05-11 | F018 | OpenCode #2 analysis | NOT→DO contrastive anchoring: showing bad+good example side-by-side stronger than rules alone. Claims +14pp vs pure abbrev rules. FLINT-Compact already uses this pattern. | May explain caveman's ~11pp advantage over old FLINT — caveman had NOT/YES examples | MEDIUM* |
 | 2026-05-11 | F014 | Claude koder (visual research) | Tables only worth it at ≥3 rows × 2+ cols — otherwise loses to prose on token count | Add table threshold rule to FLINT full+ultra | HIGH |
 | 2026-05-11 | F015 | Claude koder (visual research) | Mermaid beats prose at ≥4 nodes; ASCII diagrams almost never token-efficient | Recommend Mermaid for complex flows, skip ASCII | HIGH |
 | 2026-05-11 | F016 | Claude koder (visual research) | Code+1-line comment ~15% fewer tokens than prose for usage examples | Change "one concrete example" rule to prefer code+comment | HIGH |
@@ -114,9 +115,9 @@ Validated runs only. CLI self-reporting excluded.
 |----|------------|-----------|-----------|----------|
 | H001 | flint_compact beats caveman_ultra by 5-10% | Shorter prompt + example = better instruction following | Run BM003 with API key | HIGH |
 | H002 | HYBRID 92% claim is inflated / self-reporting bias | Gemini measures its own output without external baseline | BM004 via Gemini API | HIGH |
-| H003 | Telegraph persona achieves 70%+ savings | Strong contextual framing beats explicit rules | Single-turn API test, 20 prompts | MEDIUM |
+| H003 | Telegraph persona achieves 70%+ savings | Strong contextual framing beats explicit rules | Single-turn API test, 20 prompts | IN PROGRESS — Gemini + Codex 2026-05-11 |
 | H004 | JSON-schema output saves tokens for structured answers | Structured format eliminates transitional prose | Token-count A/B, 10 question types | MEDIUM |
-| H005 | Negative instruction ("never say: a, the, is") outperforms positive | Negative constraints easier for model to follow | 5-turn test, count forbidden words | MEDIUM |
+| H005 | Negative instruction ("never say: a, the, is") outperforms positive | Negative constraints easier for model to follow | 5-turn test, count forbidden words | IN PROGRESS — Gemini + Codex 2026-05-11 |
 | H006 | Hard token limits (max 80 tokens) reduce output more than style rules | Constraint > instruction | Single-turn A/B, 20 prompts | MEDIUM |
 | H007 | Linguistic anchoring prevents drift better than explicit "ACTIVE EVERY RESPONSE" | Implicit signal more persistent than explicit reminder | 15-turn drift test | LOW |
 | H008 | Variable substitution (X=auth, Y=DB) compresses technical answers | Reduces repeated long terms | Domain-specific A/B test | LOW |
@@ -149,7 +150,7 @@ Validated runs only. CLI self-reporting excluded.
 | 2026-05-11 | Gemini CLI | runes-compress deployed, HYBRID A/B test in progress | gem-thal/scripts/runes-compress.py | IN PROGRESS |
 | 2026-05-11 | OpenCode | Literature research on compression methods | — | PENDING |
 | 2026-05-11 | OpenCode #2 | Building 6 experimental compression prompts | — | PENDING |
-| 2026-05-11 | Codex | Token-cost analysis (format vs tokens) | — | PENDING |
+| 2026-05-11 | Codex | Token-cost analysis (format vs tokens) | COMPRESSION_RESEARCH_DB.md, BENCHMARK_DECISIONS.md | DONE |
 | 2026-05-11 | Claude koder | Visual/structural compression research | — | PENDING |
 
 ---
