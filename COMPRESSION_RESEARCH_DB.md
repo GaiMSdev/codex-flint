@@ -95,7 +95,11 @@ Validated runs only. CLI self-reporting excluded.
 | 2026-05-11 | F009 | Gemini agent claim | HYBRID (broken-English + MetaGlyph): 92% savings claimed | Unvalidated self-report; A/B test assigned (BM004) | LOW |
 | 2026-05-11 | F010 | FLINT-Compact design | Shorter prompt + one concrete example = caveman-level prompt architecture | Removes MetaGlyph clutter, adds PRESERVE ALWAYS for facts | MEDIUM |
 | 2026-05-11 | F011 | CLI benchmark analysis | System prompt with examples copied into history = self-reinforcing verbosity | Multi-turn CLI benchmarks with history-as-text are fundamentally flawed | HIGH |
-| 2026-05-11 | F012 | Codex token analysis | (PENDING — assigned to Codex agent) Format cost: bullets vs headers vs JSON vs prose | | PENDING |
+| 2026-05-11 | F012 | Codex (tiktoken o200k_base) | dash bullets = semicolon prose (25 tok); numbered list 29 (+16%); prose sentence 26 | Use bullets for scanability; avoid numbered lists unless order matters | HIGH |
+| 2026-05-11 | F012b | Codex (tiktoken) | plain label 24 tok; bold/##/### all 25 tok — heading markup costs nearly same | Ultra: use plain labels, skip ## | MEDIUM |
+| 2026-05-11 | F012c | Codex (tiktoken) | key=value 20, prose 20, YAML 23, minified JSON 24, pretty JSON 38 | Pretty JSON 90% costlier than prose — never use in FLINT output | CRITICAL |
+| 2026-05-11 | F012d | Codex (tiktoken) | emoji 15–18 tok, ASCII bracket symbols 15, ASCII words 11 | Emoji up to 64% costlier than ASCII words — remove from FLINT output | HIGH |
+| 2026-05-11 | F012e | Codex (tiktoken) | double spaces 23 tok vs single/newline/blank all 15 | Normalize double spaces — 53% overhead | MEDIUM |
 | 2026-05-11 | F013 | OpenCode research | (PENDING — literature research assigned) Academic methods for LLM output compression | | PENDING |
 | 2026-05-11 | F014 | Claude koder (visual research) | Tables only worth it at ≥3 rows × 2+ cols — otherwise loses to prose on token count | Add table threshold rule to FLINT full+ultra | HIGH |
 | 2026-05-11 | F015 | Claude koder (visual research) | Mermaid beats prose at ≥4 nodes; ASCII diagrams almost never token-efficient | Recommend Mermaid for complex flows, skip ASCII | HIGH |
@@ -132,6 +136,7 @@ Validated runs only. CLI self-reporting excluded.
 | 2026-05-11 | D006 | Keep FLINT and caveman as separate Claude plugins | Coexist: caveman active by default, FLINT adds modes | Both in settings.json, statusline-wrapper selects |
 | 2026-05-11 | D007 | API benchmark = authoritative, CLI benchmark = invalid | CLI session contamination (78k input tokens/turn) | Discard BM002 results |
 | 2026-05-11 | D008 | Add format rules to FLINT full+ultra (table threshold, code+comment, English-for-technical) | Empirical findings from Claude koder visual research (F014-F017) | SKILL.md updated |
+| 2026-05-11 | D009 | Add token-cost rules to ultra: no emoji, no pretty JSON, plain labels, bullets over numbered | Codex tiktoken benchmark (F012a-e) — pretty JSON 90% overhead, emoji 64% overhead | SKILL.md + flint-activate.js updated |
 
 ---
 
