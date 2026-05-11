@@ -121,6 +121,42 @@ Validated runs only. CLI self-reporting excluded.
 | 2026-05-11 | F015 | Claude koder (visual research) | Mermaid beats prose at ≥4 nodes; ASCII diagrams almost never token-efficient | Recommend Mermaid for complex flows, skip ASCII | HIGH |
 | 2026-05-11 | F016 | Claude koder (visual research) | Code+1-line comment ~15% fewer tokens than prose for usage examples | Change "one concrete example" rule to prefer code+comment | HIGH |
 | 2026-05-11 | F017 | Claude koder (visual research) | Norwegian tokenizes 30–50% more expensive than English — technical terms always English | Add English-for-technical rule to ultra mode | CRITICAL |
+| 2026-05-11 | F031 | Caveman source: `hooks/caveman-statusline.sh:13-28,37-49`; `tests/test_caveman_stats.js:401-430` | Statusline is hardened as a hostile input surface: refuse symlink flag, cap read at 64 bytes, strip control bytes, whitelist modes, default-on savings suffix only after real stats file exists. | BUILD: FLINT status UI must use same symlink/control-byte/no-fake-number pattern before exposing visible stats. | HIGH |
+| 2026-05-11 | F032 | Caveman source: `hooks/caveman-stats.js:15-19,134-143,230-250` | Savings estimates are deliberately mode-scoped: only `full` has measured ratio; other modes report "No savings estimate" instead of extrapolating. | ADOPT: remove unbenchmarked FLINT per-mode savings claims; show measured modes only. | HIGH |
+| 2026-05-11 | F033 | Caveman source: `hooks/caveman-stats.js:95-132,255-260,334-336` | Stats also scan compressed memory pairs (`*.original.md` + `.md`) and report approximate passive input-token savings per session start. | BUILD: FLINT stats should combine output savings + local memory compression savings instead of output-only reporting. | HIGH |
+| 2026-05-11 | F034 | Caveman source: `hooks/caveman-stats.js:154-176,306-328`; `hooks/caveman-config.js:192-249` | Lifetime stats append JSONL snapshots but aggregate latest entry per session_id, avoiding double-count when `/caveman-stats` runs repeatedly. Appends use O_APPEND + O_NOFOLLOW. | BUILD: FLINT stats history should dedupe by session and append symlink-safely. | HIGH |
+| 2026-05-11 | F035 | Caveman source: `benchmarks/run.py:52-68,78-145,184-202,239-270`; `benchmarks/prompts.json:3-53` | Main benchmark uses real Anthropic usage tokens, 10 dev-task prompts, 3 trials default, medians per task, raw JSON storage, skill hash, and optional README marker update. | ADOPT: OnePlayer benchmark should store raw full responses + hash prompt/skill inputs + median over repeats. | HIGH |
+| 2026-05-11 | F036 | Caveman source: `evals/README.md:7-19,70-84`; `evals/measure.py:1-13,57-103` | Evals explicitly compare skills against a terse control, not only unguided baseline, and label limits: no fidelity, no exact Claude token count, no statistical significance. | ADOPT: report FLINT results vs both unguided and terse; keep TESTED until fidelity + repeats + proxy exist. | HIGH |
+| 2026-05-11 | F037 | Caveman source: `install.sh:23-28,63-82,699-739` | Installer keeps per-repo rule writes opt-in because writing into `$PWD` from curl-pipe is surprising; `--all` enables it, `--minimal` disables hooks/MCP/init. | ADOPT: FLINT installer/init should not write repo rules by default; make input-compression wiring explicit and reversible. | MEDIUM |
+| 2026-05-11 | F038 | Caveman source: `install.sh:507-553` | MCP shrink registration probes npm first; if registry/package missing, it skips and prints manual config instead of installing a broken spawn entry. | BUILD: FLINT mcp-shrink wiring should validate local/server path before config mutation and give manual snippet fallback. | HIGH |
+| 2026-05-11 | F039 | Caveman source: `install.sh:416-445` | Compound provider detection avoids BSD awk `RS='||'` bug by parsing `||` with bash parameter expansion; previous awk version silently detected zero agents on macOS. | LEARN: keep installer probes POSIX/macOS-safe; add tests for compound detection parsing. | MEDIUM |
+| 2026-05-11 | F040 | Caveman source: `install.sh:760-782` | Installer exits nonzero only if every detected target failed; skips and partial success are reported but do not fail the whole install. | ADOPT: FLINT multi-target installer should track installed/skipped/failed separately, not binary success/fail. | MEDIUM |
+| 2026-05-11 | F041 | Caveman source: `tools/caveman-init.js:16-35,37-53,64-97` | `caveman-init` embeds fallback rule body, prefers source-of-truth rule file, uses sentinel idempotence, appends to shared instruction files, replaces IDE-local rule files only with `--force`. | BUILD: FLINT init should use same sentinel + append/replace policy for AGENTS/Copilot vs IDE-local rules. | HIGH |
+| 2026-05-11 | F042 | Caveman source: `skills/compress/scripts/compress.py:15-17,104-120`; `tests/test_compress_safety.py:1-9,39-67` | Compression strips whole-output markdown fences and tells the model not to add outer fences; guards reject empty/identical output before any backup/write. | BUILD: FLINT compress should strip LLM wrapper fences and reject no-op/empty responses before touching disk. | HIGH |
+| 2026-05-11 | F043 | Caveman source: `mcp-servers/caveman-shrink/index.js:16-28,73-124`; `README.md:264` | `caveman-shrink` intentionally compresses only MCP metadata/list fields; request payloads and `tools/call` response content pass through unchanged to avoid breaking parsers or data semantics. | ADOPT: keep FLINT shrink v1 metadata-only; do not compress tool outputs until separate validation. | HIGH |
+| 2026-05-11 | F044 | Caveman source: `mcp-servers/caveman-shrink/compress.js:47-72` | Caveman shrink protects segments with sequential sentinel replacement; sentinels can be re-matched by later protected regexes. FLINT's single-pass protected regex fixes this class. | LEARN/REJECT upstream pattern: keep FLINT single-pass sentinel protection and add regression tests. | HIGH |
+| 2026-05-11 | F045 | Caveman source: `mcp-servers/caveman-shrink/index.js:39-41,81-107`; `tests/test_mcp_shrink.js:103-124` | Shrink fields are env-configurable (`CAVEMAN_SHRINK_FIELDS`), but recursion only runs if no top-level tools/prompts/resources matched; avoids double-processing nested schemas. | BUILD: FLINT shrink should expose field allowlist + avoid duplicate traversal/compression. | MEDIUM |
+| 2026-05-11 | F046 | Caveman source: `hooks/install.sh:120-190`; `tests/verify_repo.py:278-294,376-394` | Hook installer merges JSON via Node, backs up settings, preserves existing statusline instead of clobbering, and tests uninstall restores non-caveman settings exactly. | BUILD: FLINT hook/config installer must preserve user hooks/statusline and prove uninstall restores baseline. | HIGH |
+| 2026-05-11 | F047 | Caveman source: `hooks/install.sh:128-134`; `hooks/uninstall.sh:62-65` | Installer passes settings/hooks paths via environment variables into Node snippets to avoid shell quoting/injection bugs from `$HOME` or paths containing quotes. | ADOPT: all FLINT shell→Node config mutation should pass paths via env, not interpolate shell strings into JS. | HIGH |
+| 2026-05-11 | F048 | Caveman source: `hooks/caveman-config.js:4-10,39-58`; `skills/caveman-help/SKILL.md:39-55`; `tests/verify_repo.py:301-330` | Default mode resolution supports env var, config file, then `full`; `off` disables session auto-activation while leaving manual `/caveman` available. | BUILD: FLINT should add config defaultMode with `off` for users who want manual activation only. | HIGH |
+| 2026-05-11 | F049 | Caveman source: `caveman-compress/scripts/detect.py:8-18,37-59,76-107` | Compress detection skips code/config by extension, JSON/YAML heuristics, and >40% code-like extensionless content; backup `.original.md` never recompressed. | BUILD: FLINT compress should auto-detect natural-language files before API/LLM calls and skip backups. | HIGH |
+| 2026-05-11 | F050 | Caveman source: `caveman-compress/scripts/validate.py:41-82,154-168` | Validator handles CommonMark variable-length fences and validates inline-code multiplicity with Counters, catching lost duplicate inline code occurrences. | BUILD: FLINT validate.py should use line-based fence parser + Counter-based inline code preservation. | HIGH |
+| 2026-05-11 | F051 | Caveman source: `skills/cavecrew/SKILL.md:16-32,60-79`; `agents/cavecrew-builder.md:14-43` | Cavecrew is not generic delegation; it defines routing thresholds and terminal refusal tokens (`too-big`, `needs-confirm`, `ambiguous`, `regressed`) so main thread can branch cheaply. | BUILD: FLINT delegation agents should return machine-parseable terminal tokens, not prose status. | MEDIUM |
+| 2026-05-11 | F052 | Caveman source: `skills/caveman-commit/SKILL.md:22-34,59-65` | Commit skill compresses only safe parts: subject/body rules are terse, but breaking changes/security/data migrations/reverts always get body; no AI attribution or emoji. | ADOPT: keep FLINT commit terse but never subject-only for high-risk commit classes. | MEDIUM |
+| 2026-05-11 | F053 | Caveman source: `CLAUDE.md:28-73,220-229`; `.github/workflows/sync-skill.yml:34-115`; `tests/verify_repo.py:124-159` | Caveman treats skill/rule copies as generated artifacts: edit only source-of-truth files, CI syncs copies/ZIP/frontmatter, tests verify byte-identical synced outputs. | BUILD: FLINT needs source-of-truth + sync/test workflow before adding more agent surfaces. | HIGH |
+| 2026-05-11 | F054 | Caveman source: `.codex/hooks.json:1-17`; `.codex/config.toml:1-2`; `CLAUDE.md:176-178` | Caveman's Codex surface is much thinner than Claude: static SessionStart echo via codex hooks, no mode flag, no UserPromptSubmit JSON reinforcement, no stats/statusline. | BUILD: FLINT can outperform Caveman on Codex by implementing real mode state + per-turn reinforcement. | HIGH |
+| 2026-05-11 | F055 | Caveman source: `evals/plot.py:31-68,71-89,91-146`; `evals/README.md:36-40` | Evals generate boxplots with every prompt point, median, mean, IQR, and zero-control line; this exposes variance instead of hiding behind one average. | ADOPT: FLINT benchmark reports should include per-prompt distribution plots or tables, not only global savings. | MEDIUM |
+| 2026-05-11 | F056 | Caveman source: `CLAUDE.md:3-17,220-225` | Caveman explicitly treats README as product UI: non-technical readability, before/after examples first, install table completeness, and benchmark numbers only from real runs. | LEARN: FLINT docs should make benchmark honesty and 60-second install comprehension a review gate. | MEDIUM |
+| 2026-05-11 | F057 | Caveman source: `hooks/README.md:59-73`; `hooks/caveman-statusline.sh:13-28,37-49` | Docs' custom statusline snippet reads flag with `cat` and no symlink/whitelist/control-byte hardening, unlike the real statusline script. | REJECT copy-paste snippet: FLINT docs should point users to hardened script or include hardened snippet only. | HIGH |
+| 2026-05-11 | F058 | Caveman source: `hooks/package.json:1-3`; `CLAUDE.md:90-91`; `tests/verify_repo.py:176-182` | Hooks directory carries local `{"type":"commonjs"}` and syntax checks so `require()` survives ancestor ESM package configs. | BUILD: FLINT hooks must include package.json CJS marker + syntax checks in verification. | HIGH |
+| 2026-05-11 | F059 | Caveman source: `hooks/caveman-mode-tracker.js:11-13,108-128` | Per-turn reinforcement deliberately skips independent modes (`commit`, `review`, `compress`) so base terse style does not conflict with specialized skill behavior. | ADOPT: FLINT per-turn reinforcement should be mode-aware and skip tool/specialist modes. | HIGH |
+| 2026-05-11 | F060 | Caveman source: `hooks/caveman-mode-tracker.js:38-62`; `skills/caveman-stats/SKILL.md:1-10`; `tests/test_caveman_stats.js:98-128,445-459` | `/caveman-stats` is hook-executed and returns `decision:"block"` with real script output; model never computes numbers, and stats command preserves current mode flag. | BUILD: FLINT stats should be command/hook-rendered, not model-rendered, to eliminate self-report bias. | HIGH |
+| 2026-05-11 | F061 | Caveman source: `skills/caveman-review/SKILL.md:14-33,49-55` | Review mode compresses comments but explicitly drops terse mode for CVE-class/security findings, architecture disagreements, and onboarding contexts. | ADOPT: FLINT review compression must include safety escape hatches for high-context review feedback. | MEDIUM |
+| 2026-05-11 | F062 | Caveman source: `install.ps1:175-193,548-581,629-634`; `tests/verify_repo.py:192-209` | Windows installer has separate PowerShell-specific safeguards: avoid `$Args` collision, download remote init to temp file instead of direct pipe, PS 5.1 compatibility check (`-AsHashtable` banned), same partial-failure exit policy. | LEARN: if FLINT supports Windows installers, test PowerShell statically instead of assuming bash logic ports cleanly. | MEDIUM |
+| 2026-05-11 | F063 | Caveman source: `tests/verify_repo.py:223-237`; `tests/caveman-compress/todo-list.original.md:1-31`; `tests/caveman-compress/mixed-with-code.original.md:1-90` | Compression validation uses realistic memory fixtures: sprint task lists with names/dates/blockers and mixed prose+TypeScript API docs, not toy strings only. | ADOPT: FLINT compression tests need real-world proxy fixtures with facts, deadlines, code blocks, and security-sensitive prose. | HIGH |
+| 2026-05-11 | F064 | Caveman source: `caveman-compress/SKILL.md:48-64`; `caveman-compress/scripts/validate.py:106-184`; `caveman-compress/README.md:139-153` | Compress docs promise exact preservation for dates/numbers/proper nouns/env vars/tables and even "100%" information preserved, but validator only checks headings/code/URLs/paths/bullets/inline code. | REJECT claims; BUILD fact_match validator for dates, numbers, IDs, names, env vars, and table structure before making preservation claims. | HIGH |
+| 2026-05-11 | F065 | Caveman source: `README.md:35,117-127,295-297`; `evals/README.md:70-84`; `COMPRESSION_RESEARCH_DB.md:320-335` | Public README still frames output-shortening as proven token compression with 100% technical accuracy, while eval docs admit no fidelity measurement and new DB reframes this as instruction-perturbation. | REJECT current claim style; FLINT docs must say "output-shortening" until fact_match/cosine validates preservation. | HIGH |
+| 2026-05-11 | F066 | Caveman source: `tests/test_caveman_init.js:33-109`; `tools/caveman-init.js:64-97` | `caveman-init` has fixture tests for greenfield, idempotence, append-vs-replace, force, dry-run, only-filter, and sentinel detection. | ADOPT: FLINT init must ship fixture tests for every write policy before installer expansion. | MEDIUM |
 
 ---
 
@@ -219,3 +255,85 @@ Copy BM001 block, fill in metadata + results table.
 3. **API key → kjør alle 8 nye benchmark arms** — x_token_budget/50/combined/negation/telegraph/schema/variable/bullets
 4. **H005 negative-instruction peer review** — arm klar, trenger ≥2 reviews
 5. **detect.py + validate.py** (F029) — fullfør flint-compress pipeline
+6. **FLINT visible status/stats hardening** (F031/F034 HIGH) — no symlink reads, control-byte strip, no fabricated savings badge, JSONL dedupe by session
+7. **FLINT stats memory-savings scan** (F033 HIGH) — report `*.original.md` passive input savings alongside output savings
+8. **mcp-shrink config validation** (F038 HIGH) — validate local/server path before TOML mutation; print manual fallback on failure
+9. **flint-init sentinel + write policy** (F041 HIGH) — append shared files, replace IDE-local rules only with force
+10. **flint-compress no-op/fence guards** (F042 HIGH) — strip outer wrapper fences; abort on empty/identical output before disk writes
+11. **flint-shrink metadata-only contract** (F043/F045 HIGH) — compress list metadata only; configurable field allowlist; no tool-call output mutation
+12. **flint hook installer merge/uninstall tests** (F046/F047 HIGH) — env-passed paths, preserve existing statusline/hooks, exact uninstall restore
+13. **FLINT defaultMode config** (F048 HIGH) — env/config/off resolution with manual activation available
+14. **flint-compress detector + stronger validator** (F049/F050 HIGH) — skip code/config/backups; CommonMark fence parser; inline-code Counter preservation
+15. **FLINT source-of-truth sync workflow** (F053 HIGH) — generated copies/ZIP/frontmatter sync + byte-identity verification
+16. **Codex-native mode state** (F054 HIGH) — use FLINT's Codex surface to beat Caveman static echo with state + reinforcement
+17. **Benchmark variance visualization** (F055 MEDIUM) — per-prompt dots/median/IQR or equivalent table for every reported result
+18. **Harden statusline docs/snippets** (F057 HIGH) — no unsafe `cat` snippets; docs must reuse hardened statusline reader
+19. **CJS hook package marker** (F058 HIGH) — add `hooks/package.json` + syntax verification for every JS hook
+20. **Hook-rendered FLINT stats** (F060 HIGH) — `/flint-stats` should block prompt and return script output, never model-estimated numbers
+21. **Real-world proxy compression fixtures** (F063 HIGH) — task lists + mixed prose/code docs with fact_match scoring, not toy strings
+
+---
+
+## MECHANISM HYPOTHESES (M021-M030) — Codex/OpenCode caveman absorption 2026-05-11
+
+**Empiriske mønstre fra reverse-engineering. Ikke 100% bevist, men sterkt observert.**
+
+### M021 — Anchor-strength via prompt-storrelse
+Caveman 1915c persisterer bedre enn FLINT 160c. Tette regelsett overlever context-kompaktering.
+**Implikasjon:** Større, tettere FLINT SKILL.md kan lukke deler av 21pp-gap.
+**TESTABLE:** Bygg FLINT-large variant (~2000c), sammenlign retention over 20 turns.
+
+### M022 — Compression vs fact-preservation = antagonistic
+Ultra_glyph hadde 9-82% varians fordi attention-budget er fast. Kompresjon vinn over bevaring uten eksplisitt fact-rule.
+**Implikasjon:** Trenger eksplisitt "PRESERVE: numbers, IDs, exact strings" linje.
+
+### M023 — NOT→DO contrastive lærer transformasjon
++14pp savings fordi modellen ser hele verbose→terse vegen, ikke bare constraint.
+**Implikasjon:** Legg NOT→DO eksempler i SKILL.md (allerede delvis i ultra).
+
+### M024 — Token-priors over symbol-rarity
+→ vinn over ∈∀∃∴ fordi pretraining-priors. Vanlige symboler = stabil output. MetaGlyph sjeldne → varians.
+**Implikasjon:** IKKE introdusere eksotiske symboler. Hold til ASCII + → arrows.
+
+### M025 — Per-turn reinforcement = anti-drift
+Context vokser → SessionStart-attention krymper → reinforcement re-anchorer.
+**Implikasjon:** Vår UserPromptSubmit-hook gjør dette riktig. Behold.
+
+### M026 — Wenyan retention-kollaps mistenkt
+75% savings-claim, men sannsynlig retention-kollaps på tall/IDs. IKKE TESTET.
+**TESTABLE:** Kjør wenyan med fact_match_score på tall-tunge prompts.
+
+### M027 — Hard budget H006 = kort-cut + risiko
+Vinner fordi fjerner "hvor mye"-avgjørelse. Risiko: trunkering.
+**STATUS:** H006 arms i v2 nå, klar for test.
+
+### M028 — Long conversation amortiserer system-prompt
+Fast kost (system prompt) deles på flere turns → bedre relativ savings.
+**Implikasjon:** Vårt long_conversation-scenario er korrekt val.
+
+### M029 — Terse vinner over strukturerte modus
+"Be concise" har sterke RLHF-priors. Strukturerte regelsett trigger "hvordan-følge"-CoT før svar.
+**Implikasjon:** Mindre regler kan paradoksalt gi MER savings. Test "FLINT minimal" variant.
+
+### M030 — Norsk 30-50% dyrere (tokenizer)
+Engelsk-dominert vokabular. Norsk-tokens er multibyte.
+**Implikasjon:** Vår "ultra: English for technical" regel er korrekt.
+
+---
+
+## STØRSTE INSIGHT — REFRAME
+
+**Vi måler ikke "kompresjon" — vi måler "hva modellen velger å skrive".**
+
+Caveman er IKKE kompressor. Det er instruction-perturbation som flytter output-distribusjon mot kortere svar med RISIKO for faktatap.
+
+**Konsekvenser:**
+1. "Savings %" alene er villedende metrikk — krever fact_preservation
+2. 21pp-gap til caveman er kanskje illusorisk — caveman bytter savings mot faktatap
+3. fact_match + cosine_sim må være FØRSTEKLASSES metrikker, ikke afterthoughts
+4. Ny baseline: "savings/fact_loss ratio" = ekte effektivitet
+
+**STRATEGISK SKIFTE:**
+- Stopp jakten på max savings %
+- Mål: max savings/(fact_loss + cosine_drop) ratio
+- Test caveman med fact_match — kanskje deres -68% er -50% faktisk-effektiv
