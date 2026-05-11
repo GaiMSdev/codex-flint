@@ -54,3 +54,38 @@ echo "Mode: $(cat ~/.codex/.flint-active 2>/dev/null || echo 'off')"
 echo "Sessions: $(find ~/.codex/sessions -name '*.jsonl' 2>/dev/null | wc -l | tr -d ' ') files"
 echo "Latest: $(find ~/.codex/sessions -name '*.jsonl' 2>/dev/null | xargs ls -t 2>/dev/null | head -1)"
 ```
+
+## History
+
+When user writes `/flint-stats --history` or `flint history`:
+
+```bash
+python3 -c "
+import os, json
+fp = os.path.expanduser('~/.claude/.flint-history.jsonl')
+O_NOFOLLOW = getattr(os, 'O_NOFOLLOW', 0)
+try:
+    fd = os.open(fp, os.O_RDONLY | O_NOFOLLOW)
+    data = os.read(fd, 65536).decode()
+    os.close(fd)
+    lines = [l for l in data.split('\n') if l.strip()]
+    for line in lines[-10:]:
+        print(line)
+except FileNotFoundError:
+    pass  # handled below
+except OSError:
+    pass
+"
+```
+
+Parse the output and render as a table. Count lines first. If ≥3 rows, render a pipe-delimited table. If <3 entries, render as prose.
+
+```text
+ts                  | mode  | event
+────────────────────┼───────┼───────
+2026-05-11T05:30:00 | full  | turn
+2026-05-11T05:31:00 | full  | turn
+2026-05-11T05:32:00 | ultra | turn
+```
+
+If the file doesn't exist or is empty, report: "No history yet. Flint must be activated first."
