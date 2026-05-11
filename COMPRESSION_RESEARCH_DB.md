@@ -22,6 +22,7 @@ All known compression methods. Status: VALIDATED / TESTED / HYPOTHESIS / REJECTE
 | M009 | runes-hybrid | HYBRID: broken-English + MetaGlyphs (Gemini claim) | ~92%* | unknown | unknown | Gemini | UNVALIDATED* |
 | M010 | wenyan | Classical Chinese compression (之其者也矣) | no data | no data | 5/5 | Claude | HYPOTHESIS |
 | M011 | telegraph-persona | "You are 1890 telegraph operator — words cost money" | untested | untested | unknown | All | HYPOTHESIS |
+| M018 | telegraph-stripped | Telegraph persona stripped to core constraint only (no narrative context) | ~22.3% long / ~10.5% code* | unknown | unknown | All | TESTED |
 | M012 | negative-instruction | "Never say: I, the, a, an, is, are, was, were" | untested | untested | unknown | All | HYPOTHESIS |
 | M013 | json-schema-output | Force JSON: {answer, confidence, next} always | untested | untested | unknown | All | HYPOTHESIS |
 | M014 | token-limit-hard | "Answer in max 80 tokens" hard constraint | untested | untested | unknown | All | HYPOTHESIS |
@@ -103,6 +104,7 @@ Validated runs only. CLI self-reporting excluded.
 | 2026-05-11 | F013 | OpenCode research | (PENDING — literature research assigned) Academic methods for LLM output compression | | PENDING |
 | 2026-05-11 | F018 | OpenCode #2 analysis | NOT→DO contrastive anchoring: showing bad+good example side-by-side stronger than rules alone. Claims +14pp vs pure abbrev rules. FLINT-Compact already uses this pattern. | May explain caveman's ~11pp advantage over old FLINT — caveman had NOT/YES examples | MEDIUM* |
 | 2026-05-11 | F019 | OpenCode H006 review | Constraint-based prompting: 50-70% savings but HIGH variance (±30%). Style-based: 30-50% but LOW variance. LLMs respect prompt token limits ±30% only; API max_tokens is hard stop. 80T sweet spot for 5-fact retention. Utility cliff below 50T. | Combined arm (token limit + style) likely optimal. Add completeness score to benchmark. | HIGH |
+| 2026-05-11 | F020 | TELEGRAPH-STRIPPED review | M018: 22.3% savings long conv, 10.5% code refactor (anomalously low). Status: TESTED. Missing: 1 second opinion + 1 non-character-count method + A/B vs original telegraph-persona. "Technical validity" metric undefined. | Third opinion from OpenCode #2 ordered. A/B vs M011 needed before REVIEWED. | TESTED |
 | 2026-05-11 | F014 | Claude koder (visual research) | Tables only worth it at ≥3 rows × 2+ cols — otherwise loses to prose on token count | Add table threshold rule to FLINT full+ultra | HIGH |
 | 2026-05-11 | F015 | Claude koder (visual research) | Mermaid beats prose at ≥4 nodes; ASCII diagrams almost never token-efficient | Recommend Mermaid for complex flows, skip ASCII | HIGH |
 | 2026-05-11 | F016 | Claude koder (visual research) | Code+1-line comment ~15% fewer tokens than prose for usage examples | Change "one concrete example" rule to prefer code+comment | HIGH |
