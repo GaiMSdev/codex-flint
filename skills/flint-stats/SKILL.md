@@ -30,16 +30,37 @@ Run it, capture stdout, and relay the output verbatim to the user.
 
 ## Compression ratios used for estimates
 
-| Mode | Output reduction estimate |
-|------|--------------------------|
-| lite | 30% |
-| full | 54% vs unguided baseline |
-| ultra | 57-69% vs unguided baseline |
+| Mode | Ratio | Source | n |
+|------|-------|--------|---|
+| lite | 0.30 | estimated | 0 |
+| full | 0.47 | BM001 single-run | 1 |
+| ultra | 0.50 | BM001 single-run | 1 |
+| wenyan | 0.75 | no benchmark data | 0 |
 
 These are output-side estimates. Generic terse instruction alone measured about
 82% output savings vs unguided baseline, so structured modes should be judged
 against terse control as well as baseline. Codex total budget is often
 input/context dominated.
+
+## Savings claims — tentative until n≥5
+
+**Do NOT report a savings percentage without naming its source.** Per M034 and
+Hypotese K (bimodal latch), a single benchmark run is not enough evidence to
+treat a ratio as measured. Status levels:
+
+| Status | Requirement |
+|--------|-------------|
+| HYPOTHESIS | idea, no data |
+| TESTED | one run, needs more validation |
+| REVIEWED | ≥2 agent opinions + ≥1 benchmark |
+| VALIDATED | ≥2 benchmarks + ≥2 reviews + real-world proxy |
+
+Until a ratio reaches VALIDATED, the stats output must mark it as such (the
+`source` column in `/flint-stats` does this).
+
+When reporting `/flint-stats` output to the user: never collapse the source
+column into a single "saved" number. Always include the source caveat or the
+"TENTATIVE" header.
 
 ## If no token data is found
 
