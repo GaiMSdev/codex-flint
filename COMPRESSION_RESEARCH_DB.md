@@ -695,3 +695,58 @@ Vår flint-history.jsonl sporer kun turn counts for `/flint-stats`. Skulle vært
 - Neste benchmark bør logge infra-kontekst per run (CPU/RAM/disk IO)
 - Vurder å legge til `infra_context` felt i benchmark JSON output
 - Ikke stol på enkelt-kjøringer — vår multi-run approach er validert av Anthropics egen forskning
+
+---
+
+## SCOUT UPDATE 2026-05-11 10:55 (Gemini)
+
+### M038 — ENTROPY-TRIGGER (KRITISK NY MEKANISME)
+**Empirisk støtte:** Models "latch" onto intent around intermediate layers — confirmed in May 2026 papers.
+
+**MEKANISME-FORSLAG:**
+- Turn 1-3: light/no compression (let model stabilize)
+- Turn 4+: measure entropy (model confidence?), if low → trigger HYBRID mode
+- Adaptive, ikke fixed-from-start
+
+**VALIDERER VÅR HYPOTESE K** (bimodal latch — Claude koder 4c01e9c).
+
+**IMPLEMENTERINGSVEI:**
+- Bygg `x_adaptive_latch` arm i compression_benchmark_v2.py:
+  - Turn 1-3: terse-only system prompt
+  - Turn 4+: full caveman_full system prompt
+- Mål: er turn 1-3 stabilisering nok til at stricter prompting fra turn 4+ får compression-state?
+
+**Tro:** 70% — direkte sammen-spilling med Hypotese K validering.
+**STATUS:** BACKLOG for neste sesjon (build arm + test n=5 etter API).
+
+---
+
+### M039 — Claw Compactor + CodeBurn (GitHub trending mai 2026)
+
+**Claw Compactor** — AST-aware compression
+- Konsept: forstå kode-struktur, komprimer prose rundt code-blocks
+- Differensierer fra naïve text-compression som ødelegger AST
+
+**CodeBurn** — Local waste tracking
+- Tracker hvilken kontekst som faktisk brukes
+- Burner det som ikke leses
+
+**FLINT-IMPLIKASJON:**
+- AST-aware = ny dimensjon vi ikke har testet
+- Local waste tracking = mulig hookSpecificOutput-utvidelse
+
+**TRO:** 50% — interessant, ikke direkte rute til caveman-paritet
+**STATUS:** BACKLOG, sjekk repo-detaljer neste sesjon
+
+---
+
+### M040 — MetaGlyph 81% på Gemini 2.5 Flash (cross-model claim)
+
+**Paper:** mai 2026, symbolic metalanguages
+**Claim:** 81% reduction på Gemini Flash spesifikt
+
+**MEN:** Vi har tidligere evidens (M024) at MetaGlyph er ustabil på Anthropic-modeller pga token-priors.
+Resultatet kan være Gemini-spesifikt — IKKE generaliserbart.
+
+**TRO:** 30% (cross-model claim trenger replikering)
+**STATUS:** Test PARALLELT på Haiku-4-5 — hvis MetaGlyph eksploderer som tidligere = MODEL-SPESIFIKK
