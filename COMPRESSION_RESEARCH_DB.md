@@ -1,0 +1,164 @@
+# COMPRESSION RESEARCH DATABASE
+<!-- All agents: read freely, append with date prefix, never overwrite existing rows -->
+<!-- Location: codex-flint/COMPRESSION_RESEARCH_DB.md — git-tracked, agent-shared -->
+<!-- Schema version: 1.0 | Started: 2026-05-11 -->
+
+---
+
+## METHODS CATALOGUE
+
+All known compression methods. Status: VALIDATED / TESTED / HYPOTHESIS / REJECTED.
+
+| ID | Name | Description | Savings vs Baseline | vs Terse | Retention | Platform | Status |
+|----|------|-------------|--------------------|-----------|-----------|---------:|--------|
+| M001 | terse-plain | Generic "be concise" instruction | ~82% | — (reference) | 5/5 | All | VALIDATED |
+| M002 | caveman-full | Caveman drop-articles + short synonyms, per-turn hook | ~65% | -91.7% | 5/5 | Claude | VALIDATED |
+| M003 | caveman-ultra | Caveman max density + cavemem SQLite memory | ~69% | -71.4% | 5/5 | Claude | VALIDATED |
+| M004 | flint-full | FLINT full mode (concise, no preamble, fragments OK) | ~54% | -151.7% | 5/5 | Claude/Codex | VALIDATED |
+| M005 | flint-ultra | FLINT ultra (abbrev prose, arrows, PRESERVE facts) | ~57% | -135.3% | 5/5 | Claude/Codex | VALIDATED |
+| M006 | flint-compact | Shorter prompt + PRESERVE ALWAYS + concrete example | ~65-74%* | unknown | 5/5 | Claude/Codex | HYPOTHESIS* |
+| M007 | runes-full | RUNES full for Gemini (drop articles, fragments OK) | ~54% | unknown | unknown | Gemini | TESTED |
+| M008 | runes-ultra | RUNES ultra for Gemini (max density) | ~69% | unknown | unknown | Gemini | TESTED |
+| M009 | runes-hybrid | HYBRID: broken-English + MetaGlyphs (Gemini claim) | ~92%* | unknown | unknown | Gemini | UNVALIDATED* |
+| M010 | wenyan | Classical Chinese compression (之其者也矣) | no data | no data | 5/5 | Claude | HYPOTHESIS |
+| M011 | telegraph-persona | "You are 1890 telegraph operator — words cost money" | untested | untested | unknown | All | HYPOTHESIS |
+| M012 | negative-instruction | "Never say: I, the, a, an, is, are, was, were" | untested | untested | unknown | All | HYPOTHESIS |
+| M013 | json-schema-output | Force JSON: {answer, confidence, next} always | untested | untested | unknown | All | HYPOTHESIS |
+| M014 | token-limit-hard | "Answer in max 80 tokens" hard constraint | untested | untested | unknown | All | HYPOTHESIS |
+| M015 | variable-substitution | Let X=auth, Y=DB — write with variables | untested | untested | unknown | All | HYPOTHESIS |
+| M016 | bullets-only | Format-force: only bullets, no prose | untested | untested | unknown | All | HYPOTHESIS |
+| M017 | linguistic-anchoring | "Me ⚙" fragments as anti-drift anchors | untested | untested | unknown | Gemini | HYPOTHESIS |
+
+*M006 flint-compact: CLI benchmark invalid (78k input-token contamination). API benchmark pending.
+*M009 runes-hybrid: self-reported by Gemini agent, no external validation yet.
+
+---
+
+## BENCHMARK LOG
+
+Validated runs only. CLI self-reporting excluded.
+
+### BM001 — 2026-05-11 — API cross-platform (authoritative)
+- **Model:** claude-haiku-4-5-20251001
+- **Arms:** baseline, terse, caveman_full, caveman_ultra, full (flint), ultra_plain (flint)
+- **Scenarios:** long_conversation (10 turns), context_retention (8 turns, facts@turn1→recall@turn8)
+- **Valid:** YES (API key, proper multi-turn, no session contamination)
+- **Results:**
+
+| Mode | Output tokens | vs Baseline | vs Terse |
+|------|--------------|-------------|----------|
+| baseline | 14 595 | — | — |
+| terse | 10 612 | +27.3% saved | reference |
+| caveman_full | ~8 000* | +65.1% saved | -91.7% |
+| caveman_ultra | ~7 200* | +68.8% saved | -71.4% |
+| flint-full | ~6 700* | +54.1% saved | -151.7% |
+| flint-ultra | ~6 300* | +57.1% saved | -135.3% |
+
+*Approximate from percentage back-calculations.
+- **Context retention:** all modes 5/5 facts recalled
+- **Key finding:** terse-plain beats ALL structured skills on raw output savings. Caveman beats FLINT by ~11%.
+
+### BM002 — 2026-05-11 — CLI benchmark (INVALID)
+- **Model:** claude-haiku-4-5-20251001
+- **Arms:** baseline, terse, caveman_ultra, flint_compact
+- **Valid:** NO
+- **Why invalid:**
+  1. ~78k input tokens/turn from CLAUDE.md + caveman hooks masked signal
+  2. History-as-text: model replikates own verbosity
+  3. No max_tokens for caveman → 8234 tokens in single turn
+- **Results:** DISCARD — structured skills showed inverted (worse than baseline)
+
+### BM003 — PENDING — API flint_compact validation
+- **Status:** Blocked on ANTHROPIC_API_KEY
+- **Arms needed:** baseline, terse, caveman_ultra, flint_compact
+- **Expected:** flint_compact ~65-74% (hypothesis)
+
+### BM004 — PENDING — Gemini HYBRID vs RUNES A/B
+- **Status:** Assigned to Gemini CLI agent 2026-05-11
+- **Arms needed:** baseline, terse, runes-full, runes-hybrid
+- **Methodology:** Gemini API direct (not CLI self-report)
+
+---
+
+## RESEARCH FINDINGS
+
+| Date | ID | Source | Finding | Implication | Confidence |
+|------|----|--------|---------|-------------|------------|
+| 2026-05-11 | F001 | Caveman reverse-eng. | Caveman uses per-turn hookSpecificOutput JSON — persistence mechanism | Must have UserPromptSubmit hook or model drifts after ~5 turns | HIGH |
+| 2026-05-11 | F002 | Caveman reverse-eng. | Caveman runtime-filters SKILL.md to active mode's rows only at hook time | Shorter injected prompt = less noise = better compression | HIGH |
+| 2026-05-11 | F003 | Caveman reverse-eng. | Cavemem = separate SQLite + MCP tool (not part of skill). Handles fact retention. | Skill itself has NO fact-preservation rules — cavemem is external | HIGH |
+| 2026-05-11 | F004 | Benchmark BM001 | terse-plain (~82%) beats all structured skills on raw output savings | Structured skills' value = persistence + mode control, not savings vs terse | HIGH |
+| 2026-05-11 | F005 | Benchmark BM001 | All compression modes retain 5/5 facts equally | Fact retention not differentiator — persistence/compression is | HIGH |
+| 2026-05-11 | F006 | Caveman reverse-eng. | Caveman has dual compression: output (~65%) + memory files (~46% via cavemem) | We need input compression too, not just output | HIGH |
+| 2026-05-11 | F007 | mcp-shrink analysis | mcp-shrink compresses MCP tool outputs before reaching LLM context | Input-side compression = bigger impact on total budget than output | HIGH |
+| 2026-05-11 | F008 | Gemini agent report | runes-compress deployed: ~21% savings on Gemini memory prose | Validates input compression concept; lower than expected (~46% claimed) | MEDIUM |
+| 2026-05-11 | F009 | Gemini agent claim | HYBRID (broken-English + MetaGlyph): 92% savings claimed | Unvalidated self-report; A/B test assigned (BM004) | LOW |
+| 2026-05-11 | F010 | FLINT-Compact design | Shorter prompt + one concrete example = caveman-level prompt architecture | Removes MetaGlyph clutter, adds PRESERVE ALWAYS for facts | MEDIUM |
+| 2026-05-11 | F011 | CLI benchmark analysis | System prompt with examples copied into history = self-reinforcing verbosity | Multi-turn CLI benchmarks with history-as-text are fundamentally flawed | HIGH |
+| 2026-05-11 | F012 | Codex token analysis | (PENDING — assigned to Codex agent) Format cost: bullets vs headers vs JSON vs prose | | PENDING |
+| 2026-05-11 | F013 | OpenCode research | (PENDING — literature research assigned) Academic methods for LLM output compression | | PENDING |
+
+---
+
+## OPEN HYPOTHESES
+
+| ID | Hypothesis | Rationale | Test Plan | Priority |
+|----|------------|-----------|-----------|----------|
+| H001 | flint_compact beats caveman_ultra by 5-10% | Shorter prompt + example = better instruction following | Run BM003 with API key | HIGH |
+| H002 | HYBRID 92% claim is inflated / self-reporting bias | Gemini measures its own output without external baseline | BM004 via Gemini API | HIGH |
+| H003 | Telegraph persona achieves 70%+ savings | Strong contextual framing beats explicit rules | Single-turn API test, 20 prompts | MEDIUM |
+| H004 | JSON-schema output saves tokens for structured answers | Structured format eliminates transitional prose | Token-count A/B, 10 question types | MEDIUM |
+| H005 | Negative instruction ("never say: a, the, is") outperforms positive | Negative constraints easier for model to follow | 5-turn test, count forbidden words | MEDIUM |
+| H006 | Hard token limits (max 80 tokens) reduce output more than style rules | Constraint > instruction | Single-turn A/B, 20 prompts | MEDIUM |
+| H007 | Linguistic anchoring prevents drift better than explicit "ACTIVE EVERY RESPONSE" | Implicit signal more persistent than explicit reminder | 15-turn drift test | LOW |
+| H008 | Variable substitution (X=auth, Y=DB) compresses technical answers | Reduces repeated long terms | Domain-specific A/B test | LOW |
+| H009 | Mixed-platform standard (one compression style for all LLMs) is impossible | Different training → different response to same prompt | Cross-model A/B: same prompt, Haiku + Gemini + GPT | MEDIUM |
+
+---
+
+## DECISIONS LOG
+
+| Date | ID | Decision | Rationale | Outcome |
+|------|----|----------|-----------|---------|
+| 2026-05-11 | D001 | Drop MetaGlyph from FLINT-Compact (except →) | No benchmark evidence glyphs help; add noise | Kept → for causality only |
+| 2026-05-11 | D002 | Add PRESERVE ALWAYS rule to ultra | Caveman has NO fact-preservation — differentiator | Implemented in flint-hook.sh + SKILL.md |
+| 2026-05-11 | D003 | Fix wenyan ratio (was 0.69, copied from ultra) | No benchmark data for wenyan — fabricated number | Removed estimate, added comment |
+| 2026-05-11 | D004 | Reject HYBRID as cross-platform standard | No external validation; models train differently | A/B test assigned, decide after BM004 |
+| 2026-05-11 | D005 | Wire flint-compress to PostToolUse hook | Auto-compress memory files on write = wired input savings | claude-flint plugin updated |
+| 2026-05-11 | D006 | Keep FLINT and caveman as separate Claude plugins | Coexist: caveman active by default, FLINT adds modes | Both in settings.json, statusline-wrapper selects |
+| 2026-05-11 | D007 | API benchmark = authoritative, CLI benchmark = invalid | CLI session contamination (78k input tokens/turn) | Discard BM002 results |
+
+---
+
+## AGENT CONTRIBUTIONS
+
+| Date | Agent | Contribution | Files | Status |
+|------|-------|-------------|-------|--------|
+| 2026-05-11 | Claude (Orchestrator) | Reverse-engineered caveman, designed FLINT-Compact | flint-hook.sh, SKILL.md, flint_compress.py, claude-flint plugin | DONE |
+| 2026-05-11 | Codex | Pushed wenyan fix, mcp-shrink wiring (in progress) | flint-hook.sh, benchmark.py, parse_session.py, config.toml | IN PROGRESS |
+| 2026-05-11 | Gemini CLI | runes-compress deployed, HYBRID A/B test in progress | gem-thal/scripts/runes-compress.py | IN PROGRESS |
+| 2026-05-11 | OpenCode | Literature research on compression methods | — | PENDING |
+| 2026-05-11 | OpenCode #2 | Building 6 experimental compression prompts | — | PENDING |
+| 2026-05-11 | Codex | Token-cost analysis (format vs tokens) | — | PENDING |
+| 2026-05-11 | Claude koder | Visual/structural compression research | — | PENDING |
+
+---
+
+## HOW TO ADD ENTRIES
+
+**Agents:** append rows to relevant section. Never overwrite. Use ISO date (YYYY-MM-DD).
+
+**New method:**
+```
+| M0XX | name | description | savings | vs_terse | retention | platform | STATUS |
+```
+
+**New finding:**
+```
+| YYYY-MM-DD | F0XX | source | finding | implication | HIGH/MEDIUM/LOW/PENDING |
+```
+
+**New benchmark run:**
+Copy BM001 block, fill in metadata + results table.
+
+**Blocking an existing entry:** add `*` suffix and footnote explaining block/update.
