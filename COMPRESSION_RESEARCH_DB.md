@@ -156,6 +156,25 @@ Validated runs only. CLI self-reporting excluded.
 
 ---
 
+## VALIDATION POLICY
+
+**En benchmark er ikke nok.** Før et funn kan bli VALIDATED:
+
+| Krav | Minimum |
+|------|---------|
+| Benchmark runs | ≥2 uavhengige kjøringer (ulike scenarier eller modeller) |
+| Agent reviews | ≥2 second opinions fra ulike agenter |
+| Metoder | Minst 2 av: token-telling, API-benchmark, lokal regex-test, human eval |
+| Real-world proxy | Minst ett scenario som ligner faktisk bruk (ikke bare syntetiske prompts) |
+
+Status-nivåer:
+- **HYPOTHESIS** — idé, ingen data
+- **TESTED** — én kjøring, trenger mer validering
+- **REVIEWED** — ≥2 agent opinions, ≥1 benchmark
+- **VALIDATED** — ≥2 benchmarks + ≥2 reviews + real-world proxy
+
+---
+
 ## HOW TO ADD ENTRIES
 
 **Agents:** append rows to relevant section. Never overwrite. Use ISO date (YYYY-MM-DD).
