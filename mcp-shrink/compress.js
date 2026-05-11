@@ -1,12 +1,13 @@
-// runes-shrink — pure-Node prose compressor for MCP tool/resource descriptions.
-// Zero external dependencies. Same boundaries as runes-compress:
+// flint-shrink — pure-Node prose compressor for MCP tool/resource descriptions.
+// Zero external dependencies. Same boundaries as flint-compress:
 // preserve code, URLs, paths, identifiers — compress everything else.
+// Norwegian fillers (bare/egentlig/liksom/faktisk/veldig/ganske) also removed.
 //
 // API: compress(text) → { compressed, before, after }
 
 'use strict';
 
-const FILLERS = /\b(?:just|really|basically|actually|simply|quite|very|essentially|literally)\b/gi;
+const FILLERS = /\b(?:just|really|basically|actually|simply|quite|very|essentially|literally|bare|egentlig|liksom|faktisk|veldig|ganske)\b/gi;
 const PLEASANTRIES = /\b(?:please|kindly|thank you|thanks|sure|certainly|of course|happy to|i'?d be happy)\b[,.]?\s*/gi;
 const HEDGES = /\b(?:perhaps|maybe|might|could potentially|would like to|i think|in my opinion|it seems|it appears)\b\s*/gi;
 const LEADERS = /^(?:i'?ll|i will|i can|i'?d|you can|we will|we can|let me|let'?s)\s+/gim;
@@ -26,12 +27,12 @@ const PROTECTED = [
 // Sentinels use NUL-delimited tokens that cannot appear in real text.
 // Plain-number sentinels (" 0 ", " 1 ") collide with numeric content and
 // path fragments — restore regex incorrectly matches them and drops segments.
-const SENTINEL_RE = /\x00RUNES(\d+)\x00/g;
-function sentinel(i) { return `\x00RUNES${i}\x00`; }
+const SENTINEL_RE = /\x00FLINT(\d+)\x00/g;
+function sentinel(i) { return `\x00FLINT${i}\x00`; }
 
 // Single-pass combined regex: apply all PROTECTED patterns simultaneously.
 // Sequential loop caused sentinel re-protection: later patterns matched inside
-// already-placed \x00RUNESn\x00 tokens, producing nested sentinels that
+// already-placed \x00FLINTn\x00 tokens, producing nested sentinels that
 // survive the single restore pass as raw \x00 bytes.
 const ALL_PROTECTED_RE = new RegExp(PROTECTED.map(r => r.source).join('|'), 'gi');
 

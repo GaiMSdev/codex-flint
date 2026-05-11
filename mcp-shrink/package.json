@@ -1,0 +1,24 @@
+{
+  "name": "flint-shrink",
+  "version": "0.1.0",
+  "description": "MCP proxy that compresses prose fields (tool descriptions, etc.) using FLINT rules. Same accuracy, fewer context tokens.",
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "compress.js",
+  "bin": {
+    "flint-shrink": "index.js"
+  },
+  "files": [
+    "index.js",
+    "compress.js",
+    "README.md"
+  ],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "flint",
+    "proxy",
+    "tokens"
+  ]
+}

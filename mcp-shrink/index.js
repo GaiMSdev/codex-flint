@@ -15,6 +15,7 @@
 'use strict';
 
 const { spawn } = require('child_process');
+const readline = require('readline');
 const { compressDescriptionsInPlace, compress } = require('./compress');
 
 const args = process.argv.slice(2);
@@ -39,19 +40,6 @@ upstream.on('exit', (code, signal) => {
   if (signal) process.exit(128 + (signal === 'SIGTERM' ? 15 : 9));
   process.exit(code || 0);
 });
-
-function makeLineBuffer(onLine) {
-  let buf = '';
-  return chunk => {
-    buf += chunk.toString('utf8');
-    let nl;
-    while ((nl = buf.indexOf('\n')) !== -1) {
-      const line = buf.slice(0, nl);
-      buf = buf.slice(nl + 1);
-      if (line.trim()) onLine(line);
-    }
-  };
-}
 
 function transformResponse(msg) {
   if (!msg || !msg.result || typeof msg.result !== 'object') return msg;
@@ -81,14 +69,17 @@ function transformResponse(msg) {
   return msg;
 }
 
-upstream.stdout.on('data', makeLineBuffer(line => {
+// readline for correct newline-delimited JSON-RPC framing (per peer review).
+const rl = readline.createInterface({ input: upstream.stdout, crlfDelay: Infinity });
+rl.on('line', line => {
+  if (!line.trim()) return;
   let msg;
   try { msg = JSON.parse(line); } catch {
     process.stdout.write(line + '\n');
     return;
   }
   process.stdout.write(JSON.stringify(transformResponse(msg)) + '\n');
-}));
+});
 
 process.stdin.on('data', chunk => upstream.stdin.write(chunk));
 process.stdin.on('end', () => upstream.stdin.end());
