@@ -29,6 +29,8 @@ All known compression methods. Status: VALIDATED / TESTED / HYPOTHESIS / REJECTE
 | M015 | variable-substitution | Let X=auth, Y=DB — write with variables | untested | untested | unknown | All | HYPOTHESIS |
 | M016 | bullets-only | Format-force: only bullets, no prose | untested | untested | unknown | All | HYPOTHESIS |
 | M017 | linguistic-anchoring | "Me ⚙" fragments as anti-drift anchors | untested | untested | unknown | Gemini | HYPOTHESIS |
+| M019 | response-deduplication | LZ77-inspired: detect+compress repeated phrases mid-conversation | est ~30-50% | unknown | unknown | All | HYPOTHESIS |
+| M020 | syntactic-tree-pruning | Computational linguistics: prune optional syntactic branches (adj/adv/relative clauses) | est ~20-40% | unknown | unknown | All | HYPOTHESIS |
 
 *M006 flint-compact: CLI benchmark invalid (78k input-token contamination). API benchmark pending.
 *M009 runes-hybrid: self-reported by Gemini agent, no external validation yet.
