@@ -51,7 +51,7 @@ Code is fetched from a Git repository when you clone or `git pull`. After instal
 All hook scripts are short and human-readable. Run a require audit at any time:
 
 ```bash
-# Codex hooks + Codex skill scripts:
+# Codex scripts + skills (no hooks — hooks are in claude-flint):
 cd codex-flint
 grep -rE "require\(" scripts/ mcp-shrink/
 grep -rE "^(import|from) " skills/
