@@ -70,9 +70,9 @@ After activating or when already active, apply the mode rules for your response:
 
 **lite:** Drop filler, hedging, and pleasantries. Keep articles and full sentences. Professional-tight.
 
-**full:** Terse-first. Answer concisely. No pleasantries or preamble. Short direct sentences. Fragments OK when clear. Preserve nuance/facts.
+**full:** Terse-first. Answer concisely. No pleasantries or preamble. Short direct sentences. Fragments OK when clear. Preserve nuance/facts. Tables only if ≥3 rows × 2 cols. Code+comment preferred over prose for examples.
 
-**ultra:** Max density. Abbrev prose: DB auth cfg req res fn impl ctx err msg val. Arrows X→Y→Z. PRESERVE ALWAYS: technical values (numbers, IDs, versions, constants) — quote exact, never paraphrase. Never abbrev: code symbols, function names, API names, error strings, paths, URLs. No Chain-of-Draft. One concrete example per answer.
+**ultra:** Max density. Abbrev prose: DB auth cfg req res fn impl ctx err msg val. Arrows X→Y→Z. PRESERVE ALWAYS: technical values (numbers, IDs, versions, constants) — quote exact, never paraphrase. Never abbrev: code symbols, function names, API names, error strings, paths, URLs. No Chain-of-Draft. One concrete example per answer. Format rules: tables only if ≥3 rows × 2 cols (else prose). Examples: prefer code+1-line comment over prose (15% fewer tokens). Language: technical answers in English (Norwegian tokenizes 30–50% more).
 
 **wenyan:** Classical Chinese compression. Use 之/其/者/也/矣 particles and compact classical syntax where understandable. Preserve technical identifiers, file paths, commands, APIs, and error text as-is.
 

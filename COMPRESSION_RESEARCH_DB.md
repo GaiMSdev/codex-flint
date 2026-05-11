@@ -97,6 +97,10 @@ Validated runs only. CLI self-reporting excluded.
 | 2026-05-11 | F011 | CLI benchmark analysis | System prompt with examples copied into history = self-reinforcing verbosity | Multi-turn CLI benchmarks with history-as-text are fundamentally flawed | HIGH |
 | 2026-05-11 | F012 | Codex token analysis | (PENDING — assigned to Codex agent) Format cost: bullets vs headers vs JSON vs prose | | PENDING |
 | 2026-05-11 | F013 | OpenCode research | (PENDING — literature research assigned) Academic methods for LLM output compression | | PENDING |
+| 2026-05-11 | F014 | Claude koder (visual research) | Tables only worth it at ≥3 rows × 2+ cols — otherwise loses to prose on token count | Add table threshold rule to FLINT full+ultra | HIGH |
+| 2026-05-11 | F015 | Claude koder (visual research) | Mermaid beats prose at ≥4 nodes; ASCII diagrams almost never token-efficient | Recommend Mermaid for complex flows, skip ASCII | HIGH |
+| 2026-05-11 | F016 | Claude koder (visual research) | Code+1-line comment ~15% fewer tokens than prose for usage examples | Change "one concrete example" rule to prefer code+comment | HIGH |
+| 2026-05-11 | F017 | Claude koder (visual research) | Norwegian tokenizes 30–50% more expensive than English — technical terms always English | Add English-for-technical rule to ultra mode | CRITICAL |
 
 ---
 
@@ -127,6 +131,7 @@ Validated runs only. CLI self-reporting excluded.
 | 2026-05-11 | D005 | Wire flint-compress to PostToolUse hook | Auto-compress memory files on write = wired input savings | claude-flint plugin updated |
 | 2026-05-11 | D006 | Keep FLINT and caveman as separate Claude plugins | Coexist: caveman active by default, FLINT adds modes | Both in settings.json, statusline-wrapper selects |
 | 2026-05-11 | D007 | API benchmark = authoritative, CLI benchmark = invalid | CLI session contamination (78k input tokens/turn) | Discard BM002 results |
+| 2026-05-11 | D008 | Add format rules to FLINT full+ultra (table threshold, code+comment, English-for-technical) | Empirical findings from Claude koder visual research (F014-F017) | SKILL.md updated |
 
 ---
 
