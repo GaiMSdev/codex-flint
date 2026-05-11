@@ -35,6 +35,7 @@ All known compression methods. Status: VALIDATED / TESTED / HYPOTHESIS / REJECTE
 | M032 | wenyan-charpoet | Classical Chinese literary compression (之其者也矣). CharPoet (arXiv:2401.03512) validerer: token-free > token-based (0.96 vs 0.84 format accuracy) for classical Chinese. | unknown | unknown | unknown | All | HYPOTHESIS |
 | M035 | skill-engineering-patterns | Skill engineering design guide (Articsledge Apr 2026). Skills ≠ prompts. Progressive loading ~30-50 tok/skill. Need: scope conditions, negative examples, success criteria. | N/A (guide) | N/A | N/A | All | ADOPT |
 | M036 | context-mode-external-log | Context Mode (MindStudio May 2026): 63× compression via SQLite event log utenfor samtalen. Sandbox-filter tool output→context. Snapshot injection etter compaction. | 63× (315KB→5KB) | N/A | kvalitativ | Claude Code | HYPOTHESIS |
+| M037 | infra-noise-eval-validation | Anthropic "Quantifying infrastructure noise in agentic coding evals" (Feb 2026). Infra config introduces significant noise. Validates n_repeats=5 + bootstrap CI approach. | N/A (methodology) | N/A | N/A | All | ADOPT |
 
 *M006 flint-compact: CLI benchmark invalid (78k input-token contamination). API benchmark pending.
 *M009 runes-hybrid: self-reported by Gemini agent, no external validation yet.
@@ -671,3 +672,26 @@ Vår flint-history.jsonl sporer kun turn counts for `/flint-stats`. Skulle vært
 **Effekt:** Ikke token savings, men **session longevity**: 30 min → 3 timer.
 
 **Anbefaling:** Bygg FLINT event log (SQLite/JSONL) med session snapshot injection. Complementary til eksisterende kompresjon.
+
+---
+
+## M037 — Infrastructure Noise in Agentic Coding Evals (ADOPT)
+
+**Kilde:** Anthropic Engineering Blog "Quantifying infrastructure noise in agentic coding evals" Feb 5, 2026
+**Status:** ADOPT (metodologisk validering)
+
+**Nøkkelfunn:**
+- Infrastructure configuration (resource allocation, enforcement methodology) introduces significant noise into agentic coding evaluations.
+- This noise is often mistaken for model capability variance.
+- Anthropic's recommendation: controlled infra conditions + statistical rigor.
+
+**Validates FLINT benchmark design:**
+- n_repeats=5 default → fanger infra varians
+- Outlier removal >2σ → fjerner infra-støy
+- Bootstrap CI (seed=42) → kvantifiserer usikkerhet
+- Deterministic temp=0 → isolerer infra-varians fra sampling-varians
+
+**Praktisk implikasjon:**
+- Neste benchmark bør logge infra-kontekst per run (CPU/RAM/disk IO)
+- Vurder å legge til `infra_context` felt i benchmark JSON output
+- Ikke stol på enkelt-kjøringer — vår multi-run approach er validert av Anthropics egen forskning
