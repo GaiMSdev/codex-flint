@@ -94,9 +94,27 @@ Ingen kode, ingen Zod, ingen TypeScript-kompilering. Claude Code parser TOML og 
 
 **Kritisk detalj:** Output-kontrakten er det som gjør cavecrew verdifull, ikke subagent-konseptet. Uenige output-formater = verdiløse verktøy. Må defineres eksakt.
 
-### G012 — Marketplace distribution
-**Spørsmål:** Hva er marketplace.json-formatet? Hvem kan publisere?
-**Status:** RESEARCH NEEDED — trenger web research
+### G012 — Cross-platform rule files ✅ RESEARCHED
+**Vurdering:** BUILD — `flint-init` tool som genererer rule-filer for alle plattformer.
+
+**Hva det er:** Hvert IDE/verktøy har sitt eget rule-filformat. Caveman har `.clinerules`. Flint bør kunne generere rule-filer for:
+- Cursor: `.cursor/rules/*.mdc`
+- Windsurf: `.windsurf/rules/*.md`
+- GitHub Copilot: `.github/copilot-instructions.md`
+- Cline: `.clinerules/*.md`
+- Claude Code: `CLAUDE.md`
+- Codex CLI: `AGENTS.md`
+
+**Nøkkelinnsikt:** Cline er mest kompatibel — leser andres formater automatisk. Cursor/Windsurf beveger seg bort fra single-file rot. Aider har ikke rule-filer (bruker YAML-konfig).
+Ingen common standard — AGENTS.md er nærmest, men støttes ikke av Windsurf/Cursor native.
+
+**Anbefaling:** Bygg `flint-init` (task T007-relatert) som:
+1. Detekterer hvilke IDEs som brukes i repoet
+2. Genererer rule-filer i riktig format for hver
+3. Deler felles innhold via en `flint-rules/` kilde-mappe
+4. Cross-reference: Dette henger sammen med G005 (multi-IDE support)
+
+**Kilder:** cursor.com/docs, docs.cline.bot, docs.github.com, design.dev, aider.chat, agents.md
 
 ---
 
