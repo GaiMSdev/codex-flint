@@ -143,6 +143,8 @@ Validated runs only. CLI self-reporting excluded.
 | 2026-05-11 | D007 | API benchmark = authoritative, CLI benchmark = invalid | CLI session contamination (78k input tokens/turn) | Discard BM002 results |
 | 2026-05-11 | D008 | Add format rules to FLINT full+ultra (table threshold, code+comment, English-for-technical) | Empirical findings from Claude koder visual research (F014-F017) | SKILL.md updated |
 | 2026-05-11 | D009 | Add token-cost rules to ultra: no emoji, no pretty JSON, plain labels, bullets over numbered | Codex tiktoken benchmark (F012a-e) — pretty JSON 90% overhead, emoji 64% overhead | SKILL.md + flint-activate.js updated |
+| 2026-05-11 | D010 | opencode-runes ultra: MetaGlyph → NOT→DO contrastive anchoring | A/B data: symbols 54.1% vs NOT→DO 68.8%. Commit 6e83243 → GaiMSdev/opencode-runes main | DONE |
+| 2026-05-11 | D011 | 6 experimental arms added to compression_benchmark.py | x_token_budget/50/combined, x_bullets_only, x_negation, x_telegraph, x_schema, x_variable + completeness scoring | DONE — awaits API key |
 
 ---
 
