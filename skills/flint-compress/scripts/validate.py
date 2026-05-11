@@ -128,9 +128,10 @@ def validate_file(compressed_path: Path, original_path: Path | None = None) -> d
     if ic_orig != ic_comp:
         from collections import Counter
         c1, c2 = Counter(ic_orig), Counter(ic_comp)
-        lost = set(c1) - set(c2)
+        lost = c1 - c2
         if lost:
-            checks.append({"name": "inline_code", "passed": False, "detail": f"Lost inline code: {', '.join(f'`{x}`' for x in sorted(lost)[:10])}"})
+            items = [f"`{x}` (×{n})" for x, n in lost.most_common(10)]
+            checks.append({"name": "inline_code", "passed": False, "detail": f"Lost inline code: {', '.join(items)}"})
             all_pass = False
         else:
             checks.append({"name": "inline_code", "passed": True, "detail": f"{len(ic_orig)} inline codes preserved"})

@@ -40,8 +40,8 @@ def run_detect(root: Path, min_bytes: int = 512) -> list[dict]:
         capture_output=True, text=True, timeout=60,
     )
     if result.returncode != 0:
-        print(f"ERROR: detect.py failed: {result.stderr.strip()}", file=sys.stderr)
-        sys.exit(1)
+        print(f"  detect.py returned {result.returncode}: {result.stderr.strip()}", file=sys.stderr)
+        return []
     try:
         candidates = json.loads(result.stdout)
     except json.JSONDecodeError as e:
@@ -163,6 +163,10 @@ def main() -> None:
         # Security: skip if file changed since detect pass
         try:
             current_mtime = fp.stat().st_mtime
+            if current_mtime > detect_start:
+                print(f"    SKIP: file modified since detect pass ({current_mtime:.0f} > {detect_start:.0f})")
+                results.append({**c, "compress_ok": False, "validate_ok": False, "skip_reason": "modified_since_detect"})
+                continue
         except OSError:
             print(f"    SKIP: cannot stat file")
             results.append({**c, "compress_ok": False, "validate_ok": False, "skip_reason": "cannot stat"})
