@@ -29,10 +29,10 @@ Gap funnet → Research → Vurdering → BUILD? → Implementasjonsoppgave → 
 | G001 | caveman-shrink MCP proxy | F021 | BUILD | CRITICAL | IN PROGRESS — Claude koder |
 | G002 | flag.ts security hardening | F026 | BUILD | HIGH | PREP — OpenCode #2 → Codex |
 | G003 | History tracking (.jsonl) | F027 | BUILD | MEDIUM | QUEUED |
-| G004 | TOML command format | F022 | LEARN+ADOPT | MEDIUM | RESEARCH NEEDED |
+| G004 | TOML command format | F022 | ADOPT (simple) + BUILD (migrate) | MEDIUM | READY — se research under |
 | G005 | Multi-IDE support | F023 | BUILD | LOW | QUEUED |
 | G006 | Marketplace distribution | F024 | BUILD | LOW | QUEUED |
-| G007 | Cavecrew agent skills | F025 | BUILD | MEDIUM | QUEUED |
+| G007 | Cavecrew agent skills | F025 | BUILD (1 compressed delegation tool) | MEDIUM | READY — se research under |
 | G008 | CI/CD sync workflow | F028 | BUILD | LOW | QUEUED |
 | G009 | Python compress pipeline (detect+validate) | F029 | BUILD | MEDIUM | QUEUED |
 | G010 | Wenyan variants (4 nivåer) | F030 | BUILD | LOW | QUEUED |
@@ -45,19 +45,58 @@ Gap funnet → Research → Vurdering → BUILD? → Implementasjonsoppgave → 
 
 Prioritert liste over gaps som trenger dypere research før vurdering:
 
-### G004 — TOML command format
-**Spørsmål:** Hva er nøyaktig syntaksen? Kan vi erstatte våre Zod-schema tools med TOML? Hva mister vi?
-**Kilde:** caveman.toml, caveman-init.toml, caveman-review.toml, caveman-commit.toml
-**Research needed:** Les filene, forstå format, sammenlign med vår tools/
+### G004 — TOML command format ✅ RESEARCHED
+**Vurdering:** ADOPT for simple commands, BUILD for migration.
 
-### G007 — Cavecrew agent skills
-**Spørsmål:** Nøyaktig output-kontrakt for reviewer/investigator/builder? Hvordan styres de? Hva gjør dem bedre enn generalist?
-**Kilde:** ~/.claude/plugins/cache/caveman/caveman/ef6050c5e184/skills/cavecrew*/
-**Research needed:** Les alle SKILL.md-filer, forstå agent-routing
+**Hva det er:** 2-3 linjer TOML med `description` + `prompt`. Eksempel:
+```toml
+description = "Switch caveman intensity level (lite/full/ultra/wenyan)"
+prompt = "Switch to caveman {{args}} mode..."
+```
+Ingen kode, ingen Zod, ingen TypeScript-kompilering. Claude Code parser TOML og injecter prompt til LLM.
+
+**Styrker vs våre tools:**
+- Zero kode — endre command uten rebuild
+- Raskere å lage nye commands
+- Fungerer cross-platform (TOML parse av Claude Code selv)
+
+**Svakheter vs våre tools:**
+- Ingen logikk — kan ikke kjøre SQLite queries, git diff, image shrink
+- Ingen params-validering — `{{args}}` er eneste template
+- Ingen streaming eller tool-result manipulation
+
+**Anbefaling:** 
+- Migrer `/runes`, `/runes-help` til TOML — disse er rene prompt-injection uten logikk
+- Behold `rune_stats`, `rune_commit`, `rune_shrink` som TS tools — de trenger faktisk kode
+- Lag `commands/` directory i flint-plugin med TOML-filer for simple commands
+
+### G007 — Cavecrew agent skills ✅ RESEARCHED
+**Vurdering:** BUILD — but simplified. 1 compressed delegation tool, ikke 3 presets.
+
+**Hva det er:** Tre subagent-presets (investigator, builder, reviewer) med caveman-compressed output (~60% færre tokens returnert til main context). Hver har:
+- Definert output-kontrakt (eksakt format main thread kan forvente)
+- Begrensede tools (investigator: Read/Grep/Glob/Bash, builder: Read/Edit/Write, reviewer: Read/Grep/Bash)
+- Refusal patterns (builder nekter 3+ files, investigator nekter edits)
+- Model routing (alle bruker Haiku — billigere)
+- Auto-clarity (drop compression for security warnings)
+
+**Hvorfor de fungerer:**
+- Subagent tool results injectes verbatim i main context
+- Vanilla `Explore` som returnerer 2K tokens koster 2K main-context budget
+- `cavecrew-investigator` returnerer ~700 tokens for samme jobb
+- Over 20 delegations: 40K vs 14K — forskjellen mellom context exhaustion og å fullføre
+
+**Anbefaling:** Bygg 1 compressed delegation tool (ikke 3 presets):
+- `flint_delegate` tool med parameter `task_type: investigate | build | review`
+- Samme output-kontrakt som cavecrew
+- Haiku model, compressed output, auto-clarity
+- Chaining patterns: locate→fix→verify kan styres av orchestrator i main thread
+
+**Kritisk detalj:** Output-kontrakten er det som gjør cavecrew verdifull, ikke subagent-konseptet. Uenige output-formater = verdiløse verktøy. Må defineres eksakt.
 
 ### G012 — Marketplace distribution
-**Spørsmål:** Hva er marketplace.json-formatet? Hvem kan publisere? Er det claude.ai/marketplace?
-**Research needed:** Web research + les plugin.json-formater
+**Spørsmål:** Hva er marketplace.json-formatet? Hvem kan publisere?
+**Status:** RESEARCH NEEDED — trenger web research
 
 ---
 
@@ -72,6 +111,8 @@ Oppgaver klare til å tildeles agent:
 | T003 | Legg til .flint-history.jsonl append i flint-stats | G003 | ingen | QUEUED |
 | T004 | detect.py for flint-compress | G009 | ingen | QUEUED |
 | T005 | validate.py for flint-compress | G009 | T004 | QUEUED |
+| T006 | Migrer /runes + /runes-help til TOML commands | G004 | ingen | QUEUED |
+| T007 | Bygg flint_delegate tool (compressed subagent) | G007 | output-kontrakt definert | PREP — Big Pickle
 
 ---
 
