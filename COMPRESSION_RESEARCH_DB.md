@@ -107,6 +107,16 @@ Validated runs only. CLI self-reporting excluded.
 | 2026-05-11 | F018 | OpenCode #2 analysis | NOT→DO contrastive anchoring: showing bad+good example side-by-side stronger than rules alone. Claims +14pp vs pure abbrev rules. FLINT-Compact already uses this pattern. | May explain caveman's ~11pp advantage over old FLINT — caveman had NOT/YES examples | MEDIUM* |
 | 2026-05-11 | F019 | OpenCode H006 review | Constraint-based prompting: 50-70% savings but HIGH variance (±30%). Style-based: 30-50% but LOW variance. LLMs respect prompt token limits ±30% only; API max_tokens is hard stop. 80T sweet spot for 5-fact retention. Utility cliff below 50T. | Combined arm (token limit + style) likely optimal. Add completeness score to benchmark. | HIGH |
 | 2026-05-11 | F020 | 2-agent review (Big Pickle + OpenCode #2) | M018 TELEGRAPH-STRIPPED: TESTED, NOT REVIEWED. Blockers: token count method missing, A/B vs M011 missing, break-even analysis missing, FULL@10.5% anomalous. 2x APPROVE FOR TESTED only. | Needs: token-count method + A/B + break-even before REVIEWED. No result upgradeable to VALIDATED without ≥2 benchmarks + ≥2 reviews + proxy. | TESTED |
+| 2026-05-11 | F021 | OpenCode caveman deep-dive | caveman-shrink: MCP middleware that wraps ANY upstream MCP server, compresses description fields. npm published. We have nothing equivalent. | Highest priority port: gives input compression on all MCP tool descriptions automatically | CRITICAL |
+| 2026-05-11 | F022 | OpenCode caveman deep-dive | caveman TOML commands: 4 TOML files (caveman.toml, -init, -review, -commit) with description+prompt. Simpler than Zod-schema tools. | Simpler tool definition format — adopt for flint tools | MEDIUM |
+| 2026-05-11 | F023 | OpenCode caveman deep-dive | Multi-IDE: WindSurf (.windsurf/rules/), Cursor (.cursor/rules/), Cline (.clinerules/), Codex (.codex/hooks.json). We only have Claude/Gemini/OpenCode. | Expand flint to Cursor/Windsurf for broader reach | LOW |
+| 2026-05-11 | F024 | OpenCode caveman deep-dive | Marketplace: .claude-plugin/plugin.json + marketplace.json for formal distribution. We have none. | Distribution infrastructure needed for ecosystem adoption | LOW |
+| 2026-05-11 | F025 | OpenCode caveman deep-dive | Cavecrew: multi-agent skills (cavecrew-reviewer, cavecrew-investigator, cavecrew-builder) with strict output contracts. Agent-specific skills missing in our system. | Build flint-crew equivalents for specialized agent roles | MEDIUM |
+| 2026-05-11 | F026 | OpenCode caveman deep-dive | Security: caveman-config.js uses O_NOFOLLOW, atomic temp+rename, uid verification, size caps, VALID_MODES whitelist. Our flag.ts is naive. | Harden flag.ts with same security patterns | HIGH |
+| 2026-05-11 | F027 | OpenCode caveman deep-dive | History tracking: caveman-stats appends to .caveman-history.jsonl for lifetime usage tracking. Our stats only read current session. | Add jsonl history append to flint-stats | MEDIUM |
+| 2026-05-11 | F028 | OpenCode caveman deep-dive | CI/CD: .github/workflows/sync-skill.yml for auto-updates across IDEs. We have no automation. | Add sync workflow for codex-flint | LOW |
+| 2026-05-11 | F029 | OpenCode caveman deep-dive | Python compression pipeline: skills/compress/scripts/ with compress.py, detect.py, validate.py, benchmark.py. Full pipeline vs our single flint_compress.py. | Add detect.py (auto-detect compressible content) + validate.py to flint-compress | MEDIUM |
+| 2026-05-11 | F030 | OpenCode caveman deep-dive | Wenyan variants: caveman has 4 levels (wenyan-lite, wenyan, wenyan-full, wenyan-ultra). We have 1. | Expand wenyan to 4 levels after benchmarking base mode | LOW |
 | 2026-05-11 | F014 | Claude koder (visual research) | Tables only worth it at ≥3 rows × 2+ cols — otherwise loses to prose on token count | Add table threshold rule to FLINT full+ultra | HIGH |
 | 2026-05-11 | F015 | Claude koder (visual research) | Mermaid beats prose at ≥4 nodes; ASCII diagrams almost never token-efficient | Recommend Mermaid for complex flows, skip ASCII | HIGH |
 | 2026-05-11 | F016 | Claude koder (visual research) | Code+1-line comment ~15% fewer tokens than prose for usage examples | Change "one concrete example" rule to prefer code+comment | HIGH |
@@ -199,3 +209,13 @@ Status-nivåer:
 Copy BM001 block, fill in metadata + results table.
 
 **Blocking an existing entry:** add `*` suffix and footnote explaining block/update.
+
+---
+
+## NEXT SESSION: START HERE (prioritert)
+
+1. **caveman-shrink port → flint-shrink MCP proxy** (F021 CRITICAL) — input compression på alle MCP tool descriptions
+2. **flag.ts security hardening** (F026 HIGH) — O_NOFOLLOW + atomic + uid verify + size cap
+3. **API key → kjør alle 8 nye benchmark arms** — x_token_budget/50/combined/negation/telegraph/schema/variable/bullets
+4. **H005 negative-instruction peer review** — arm klar, trenger ≥2 reviews
+5. **detect.py + validate.py** (F029) — fullfør flint-compress pipeline
