@@ -11,6 +11,23 @@
 set -euo pipefail
 
 EVENT="${1:-prompt}"
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+
+if command -v node >/dev/null 2>&1; then
+    case "$EVENT" in
+        session)
+            if [ -f "$SCRIPT_DIR/flint-activate.js" ]; then
+                exec node "$SCRIPT_DIR/flint-activate.js"
+            fi
+            ;;
+        prompt|*)
+            if [ -f "$SCRIPT_DIR/flint-tracker.js" ]; then
+                exec node "$SCRIPT_DIR/flint-tracker.js"
+            fi
+            ;;
+    esac
+fi
+
 CODEX_DIR="${CODEX_HOME:-$HOME/.codex}"
 FLAG_FILE="$CODEX_DIR/.flint-active"
 
